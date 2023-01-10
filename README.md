@@ -1869,4 +1869,355 @@ export default mongoose.model('User', UserSchema);
 
 </details>
 
+<details>
+  <summary>Login user + add to localStorage + add to global context</summary>
+
+###### ROOT/client/src/context/actions.js
+
+```js
+export const DISPLAY_ALERT = 'SHOW_ALERT';
+export const CLEAR_ALERT = 'CLEAR_ALERT';
+
+export const REGISTER_USER_BEGIN = 'REGISTER_USER_BEGIN';
+export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
+export const REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
+
+// New LOGIN...
+export const LOGIN_USER_BEGIN = 'LOGIN_USER_BEGIN';
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
+export const LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
+```
+
+###### ROOT/client/src/context/appContext.js
+
+```js
+import { useReducer, useContext, createContext } from 'react';
+import axios from 'axios';
+import reducer from './reducer';
+import {
+  CLEAR_ALERT,
+  DISPLAY_ALERT,
+  REGISTER_USER_BEGIN,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_ERROR,
+  // New LOGIN...
+  LOGIN_USER_BEGIN,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_ERROR,
+} from './actions';
+const AppContext = createContext();
+
+const location = 'Having issue with eslint';
+
+const token = localStorage.getItem('token');
+const user = localStorage.getItem('user');
+const userLocation = localStorage.getItem('location');
+
+export const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: userLocation || '',
+  jobLocation: userLocation || '',
+};
+const AppProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const displayAlert = () => {
+    dispatch({ type: DISPLAY_ALERT });
+    clearAlert();
+  };
+
+  const clearAlert = () => {
+    setTimeout(() => {
+      dispatch({ type: CLEAR_ALERT });
+    }, 1500);
+  };
+
+  const addUserToLocalStorage = ({ user, token, location }) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', token);
+    localStorage.setItem('location', location);
+  };
+
+  const removeUserFromLocalStorage = () => {
+    localStorage.removeItem(user);
+    localStorage.removeItem(token);
+    localStorage.removeItem(location);
+  };
+
+  const registerUser = async (currentUser) => {
+    dispatch({ type: REGISTER_USER_BEGIN });
+    try {
+      const response = await axios.post('/api/v1/auth/register', currentUser);
+      console.log('response', response);
+      const { user, token, location } = response.data;
+      dispatch({
+        type: REGISTER_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+      addUserToLocalStorage({
+        user,
+        token,
+        location,
+      });
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: appContext.js:44 ~ registerUser ~ error.response',
+        error.response
+      );
+
+      dispatch({
+        type: REGISTER_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+    clearAlert();
+  };
+
+  // New loginUser content
+  const loginUser = async (currentUser) => {
+    dispatch({ type: LOGIN_USER_BEGIN });
+    try {
+      const { data } = await axios.post('/api/v1/auth/login', currentUser);
+      const { user, token, location } = data;
+      dispatch({
+        type: LOGIN_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+      addUserToLocalStorage({ user, token, location });
+    } catch (error) {
+      dispatch({
+        type: LOGIN_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+    clearAlert();
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        loginUser, // <--
+        displayAlert,
+        registerUser,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+###### ROOT/client/src/context/reducer.js
+
+```js
+import {
+  CLEAR_ALERT,
+  DISPLAY_ALERT,
+  REGISTER_USER_BEGIN,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_ERROR,
+  // New LOGIN...
+  LOGIN_USER_BEGIN,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_ERROR,
+} from './actions';
+
+const reducer = (state, action) => {
+  if (action.type === DISPLAY_ALERT) {
+    return {
+      ...state,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: 'Please provide all values!',
+    };
+  }
+  if (action.type === CLEAR_ALERT) {
+    return {
+      ...state,
+      showAlert: false,
+      alertType: '',
+      alertText: '',
+    };
+  }
+
+  if (action.type === REGISTER_USER_BEGIN) {
+    return { ...state, isLoading: true };
+  }
+
+  if (action.type === REGISTER_USER_SUCCESS) {
+    return {
+      ...state,
+      user: action.payload.user,
+      token: action.payload.token,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'success',
+      alertText: 'User Created! Redirecting...',
+    };
+  }
+
+  if (action.type === REGISTER_USER_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
+    };
+  }
+  // New LOGIN_USER_BEGIN
+  if (action.type === LOGIN_USER_BEGIN) {
+    return {
+      ...state,
+      isLoading: true,
+    };
+  }
+  // New LOGIN_USER_SUCCESS
+  if (action.type === LOGIN_USER_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      user: action.payload.user,
+      token: action.payload.token,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
+      showAlert: true,
+      alertType: 'success',
+      alertText: 'Login Successful! Redirecting...',
+    };
+  }
+  // New LOGIN_USER_ERROR
+  if (action.type === LOGIN_USER_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
+    };
+  }
+
+  throw new Error(`no such action :${action.type}`);
+};
+export default reducer;
+```
+
+###### ROOT/client/src/pages/Register.js
+
+```js
+import { useState, useEffect } from 'react';
+import { Logo, FormRow, Alert } from '../components';
+import Wrapper from '../assets/wrappers/RegisterPage';
+import { useAppContext } from '../context/appContext';
+import { useNavigate } from 'react-router-dom';
+
+const initialState = {
+  name: '',
+  email: '',
+  password: '',
+  isMember: false,
+};
+
+const Register = () => {
+  const [values, setValues] = useState(initialState);
+  const { isLoading, showAlert, displayAlert, registerUser, user, loginUser } =
+    useAppContext(); // <-- loginUser
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
+    }
+  }, [user, navigate]);
+
+  const toggleMember = () => {
+    setValues({ ...values, isMember: !values.isMember });
+  };
+
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const { name, email, password, isMember } = values;
+    if (!email || !password || (!isMember && !name)) {
+      displayAlert();
+      return;
+    }
+    const currentUser = { name, email, password };
+
+    if (isMember) {
+      //  console.log('Already a member');  <-- Before
+      loginUser(currentUser); //  <-- After
+    } else {
+      registerUser(currentUser);
+    }
+
+    console.log(values);
+  };
+
+  return (
+    <Wrapper className="full-page">
+      <form className="form" onSubmit={onSubmit}>
+        <Logo />
+        <h3>{values.isMember ? 'Login' : 'Register'}</h3>
+        {showAlert && <Alert />}
+        {!values.isMember && (
+          <FormRow
+            type="text"
+            name="name"
+            value={values.name}
+            onChange={handleChange}
+          />
+        )}
+        <FormRow
+          type="email"
+          value={values.email}
+          name="email"
+          onChange={handleChange}
+        />
+        <FormRow
+          type="password"
+          value={values.password}
+          name="password"
+          onChange={handleChange}
+        />
+
+        <button type="submit" className="btn btn-block" disabled={isLoading}>
+          submit
+        </button>
+        <p>
+          {values.isMember ? 'Not a member yet?' : 'Already a member?'}
+          <button type="button" onClick={toggleMember} className="member-btn">
+            {values.isMember ? 'Register' : 'Login'}
+          </button>
+        </p>
+      </form>
+    </Wrapper>
+  );
+};
+export default Register;
+```
+
+---
+
+</details>
+
 <br>
