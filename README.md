@@ -1712,4 +1712,161 @@ start();
 
 </details>
 
+<details>
+  <summary>Compare password</summary>
+
+###### ROOT/errors/unauthenticated.js
+
+this unauthenticated.js file is new
+
+```js
+import { StatusCodes } from 'http-status-codes';
+import CustomAPIError from './custom-api.js';
+
+class UnAuthenticatedError extends CustomAPIError {
+  constructor(message) {
+    super(message);
+    this.statusCode = StatusCodes.UNAUTHORIZED;
+  }
+}
+
+export default UnAuthenticatedError;
+```
+
+###### ROOT/errors/index.js
+
+```js
+import BadRequestError from './bad-request.js';
+import NotFoundError from './not-found.js';
+import UnAuthenticatedError from './unauthenticated.js'; // <--
+
+export { BadRequestError, NotFoundError, UnAuthenticatedError }; // <--
+```
+
+###### ROOT/controllers/authController.js
+
+```js
+import { StatusCodes } from 'http-status-codes';
+import User from '../models/User.js';
+import { BadRequestError, UnAuthenticatedError } from '../errors/index.js'; // <--
+
+const register = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email | !password) {
+    throw new BadRequestError('Please provide all values');
+  }
+  const userAlreadyExists = await User.findOne({ email });
+  if (userAlreadyExists) {
+    throw new BadRequestError('Email already in use');
+  }
+
+  const user = await User.create({ name, email, password });
+  const token = user.createJWT();
+  res.status(StatusCodes.CREATED).json({
+    user: {
+      email: user.email,
+      lastName: user.lastName,
+      location: user.location,
+      name: user.name,
+    },
+    token,
+    location: user.location,
+  });
+};
+// New, everything in login func
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new BadRequestError('Please provide all values');
+  }
+  const user = await User.findOne({ email }).select('+password');
+  if (!user) {
+    throw new UnAuthenticatedError('Invalid credentials');
+  }
+  const isPasswordCorrect = await user.comparePassword(password);
+  if (!isPasswordCorrect) {
+    throw new UnAuthenticatedError('Invalid credentials');
+  }
+  const token = user.createJWT();
+  user.password = undefined;
+  res.status(StatusCodes.OK).json({ user, token, location: user.location });
+
+  // res.send('login');
+};
+const updateUser = async (req, res) => {
+  res.send('updateUser');
+};
+export { register, login, updateUser };
+```
+
+###### ROOT/models/User.js
+
+```js
+import mongoose from 'mongoose';
+import validator from 'validator';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Please provide name'],
+    minlength: 3,
+    maxlength: 20,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: [true, 'Please provide email'],
+    validate: {
+      validator: validator.isEmail,
+      message: 'Please provide a valid email',
+    },
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Please provide password'],
+    minlength: 6,
+    select: false,
+  },
+  lastName: {
+    type: String,
+    maxlength: 20,
+    trim: true,
+    default: 'lastName',
+  },
+  location: {
+    type: String,
+    maxlength: 20,
+    trim: true,
+    default: 'my city',
+  },
+});
+// New UserSchema.methods.comparePassword
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+};
+
+UserSchema.pre('save', async function () {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+UserSchema.methods.createJWT = function () {
+  return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
+  });
+};
+
+export default mongoose.model('User', UserSchema);
+```
+
+---
+
+</details>
+
 <br>
