@@ -10,6 +10,8 @@ import {
 } from './actions';
 const AppContext = createContext();
 
+const location = 'Having issue with eslint';
+
 const token = localStorage.getItem('token');
 const user = localStorage.getItem('user');
 const userLocation = localStorage.getItem('location');
@@ -47,7 +49,7 @@ const AppProvider = ({ children }) => {
   const removeUserFromLocalStorage = () => {
     localStorage.removeItem(user);
     localStorage.removeItem(token);
-    // localStorage.removeItem(location);
+    localStorage.removeItem(location);
   };
 
   const registerUser = async (currentUser) => {
