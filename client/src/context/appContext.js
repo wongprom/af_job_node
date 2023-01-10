@@ -49,9 +49,10 @@ const AppProvider = ({ children }) => {
         '🚀 ~ file: appContext.js:44 ~ registerUser ~ error.response',
         error.response
       );
+
       dispatch({
         type: REGISTER_USER_ERROR,
-        payload: { msg: error.response.data },
+        payload: { msg: error.response.data.msg },
       });
     }
     clearAlert();
