@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import 'express-async-errors'; // <-- ⚠️ if package does not work, move to be the first import
+import morgan from 'morgan';
 dotenv.config();
 
 // db and authenticateUser
@@ -16,6 +17,9 @@ import errorHandlerMiddleware from './middleware/error-handler.js';
 
 const app = express();
 
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
 // express.json() make json data available for us in controllers
 app.use(express.json());
 

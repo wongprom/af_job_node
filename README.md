@@ -1390,6 +1390,7 @@ export default mongoose.model('User', UserSchema);
 </details>
 
 <details>
+
   <summary>Start front and backend with 1 terminal command</summary>
 
 [concurrently](https://www.npmjs.com/package/concurrently)
@@ -1420,7 +1421,7 @@ npm start
 
 </details>
 
-details>
+<details>
 
   <summary>Navigate user to Dashboard after register</summary>
 
@@ -1531,7 +1532,6 @@ export default Register;
 <details>
   <summary>Add user and other things to localStorage</summary>
 
-
 ###### client/src/context/appContext.js
 
 ```js
@@ -1637,6 +1637,75 @@ export const useAppContext = () => {
 };
 
 export { AppProvider };
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Use HTTP request logger middleware morgan </summary>
+
+[https://www.npmjs.com/package/morgan](https://www.npmjs.com/package/morgan) - HTTP request logger middleware for node.js
+
+```
+npm install morgan
+```
+
+###### ROOT/server.js
+
+```js
+import express from 'express';
+import dotenv from 'dotenv';
+import 'express-async-errors';
+import morgan from 'morgan'; //<-- New import
+dotenv.config();
+
+// db and authenticateUser
+import connectDB from './db/connect.js';
+
+// routers
+import authRouter from './routes/authRouter.js';
+import jobsRouter from './routes/jobsRouter.js';
+
+// Middleware
+import notFoundMiddleware from './middleware/not-found.js';
+import errorHandlerMiddleware from './middleware/error-handler.js';
+
+const app = express();
+
+// New if
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({ msg: 'Welcome!' });
+});
+app.get('/api/v1', (req, res) => {
+  res.json({ msg: 'API' });
+});
+
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/jobs', jobsRouter);
+
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
+
+const port = process.env.PORT || 5000;
+
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URL);
+    app.listen(port, () =>
+      console.log(`Server is listening on port ${port}...`)
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+start();
 ```
 
 ---
