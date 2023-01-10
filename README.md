@@ -57,8 +57,7 @@ const connectDB = (url) => {
   return mongoose.connect(url);
 };
 export default connectDB;
-````
-
+```
 ---
 
 </details>
@@ -2220,4 +2219,52 @@ export default Register;
 
 </details>
 
+<details>
+  <summary>Setup nested routes</summary>
+Example basic  nested structure...
+
+*(http://localhost:3000/stats)*
+*(http://localhost:3000/all-jobs)*
+*(http://localhost:3000/add-job)*
+###### App.js
+
+```js
+import {
+  AddJob,
+  AllJobs,
+  Profile,
+  Stats,
+  SharedLayout,
+} from './pages/dashboard/index';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/">
+          <Route path="stats" element={<Stats />} />
+          <Route path="all-jobs" element={<AllJobs />}></Route>
+          <Route path="add-job" element={<AddJob />}></Route>
+          <Route path="profile" element={<Profile />}></Route>
+        </Route>
+        <Route path="/register" element={<Register />} />
+        <Route path="/landing" element={<Landing />} />
+        <Route
+          path="*"
+          element={
+            <div>
+              <Error />
+            </div>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+---
+
+</details>
 <br>
+````
