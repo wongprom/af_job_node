@@ -1424,7 +1424,6 @@ details>
 
   <summary>Navigate user to Dashboard after register</summary>
 
-
 ###### client/src/pages/Register.js
 
 ```js
@@ -1523,6 +1522,121 @@ const Register = () => {
   );
 };
 export default Register;
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Add user and other things to localStorage</summary>
+
+
+###### client/src/context/appContext.js
+
+```js
+import { useReducer, useContext, createContext } from 'react';
+import axios from 'axios';
+import reducer from './reducer';
+import {
+  CLEAR_ALERT,
+  DISPLAY_ALERT,
+  REGISTER_USER_BEGIN,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_ERROR,
+} from './actions';
+const AppContext = createContext();
+
+// New localStorage.getItem
+const token = localStorage.getItem('token');
+const user = localStorage.getItem('user');
+const userLocation = localStorage.getItem('location');
+
+export const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null, // <--
+  token: token, // <--
+  userLocation: userLocation || '', // <--
+  jobLocation: userLocation || '', // <--
+};
+const AppProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const displayAlert = () => {
+    dispatch({ type: DISPLAY_ALERT });
+    clearAlert();
+  };
+
+  const clearAlert = () => {
+    setTimeout(() => {
+      dispatch({ type: CLEAR_ALERT });
+    }, 1500);
+  };
+
+  // new addUserToLocalStorage
+  const addUserToLocalStorage = ({ user, token, location }) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', token);
+    localStorage.setItem('location', location);
+  };
+  // new removeUserFromLocalStorage
+  const removeUserFromLocalStorage = () => {
+    localStorage.removeItem(user);
+    localStorage.removeItem(token);
+    // localStorage.removeItem(location);
+  };
+
+  const registerUser = async (currentUser) => {
+    dispatch({ type: REGISTER_USER_BEGIN });
+    try {
+      const response = await axios.post('/api/v1/auth/register', currentUser);
+      console.log('response', response);
+      const { user, token, location } = response.data;
+      dispatch({
+        type: REGISTER_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+      // new addUserToLocalStorage
+      addUserToLocalStorage({
+        user,
+        token,
+        location,
+      });
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: appContext.js:44 ~ registerUser ~ error.response',
+        error.response
+      );
+
+      dispatch({
+        type: REGISTER_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+    clearAlert();
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        displayAlert,
+        registerUser,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
 ```
 
 ---
