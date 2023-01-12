@@ -7,12 +7,13 @@ import {
   Stats,
   SharedLayout,
 } from './pages/dashboard/index';
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/">
-          <Route path="stats" element={<Stats />} />
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<Stats />} />
           <Route path="all-jobs" element={<AllJobs />}></Route>
           <Route path="add-job" element={<AddJob />}></Route>
           <Route path="profile" element={<Profile />}></Route>
