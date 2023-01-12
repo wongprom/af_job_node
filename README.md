@@ -2266,5 +2266,99 @@ function App() {
 ---
 
 </details>
-<br>
+
+<details>
+  <summary>Create protected route and navigate user if logged in or not</summary>
+
+
+###### App.js
+
+```js
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { Error, Landing, Register, ProtectedRoute } from './pages';
+import {
+  AddJob,
+  AllJobs,
+  Profile,
+  Stats,
+  SharedLayout,
+} from './pages/dashboard/index';
+// New <Route path="/" element={ <ProtectedRoute>.....
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <SharedLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Stats />} />
+          <Route path="all-jobs" element={<AllJobs />}></Route>
+          <Route path="add-job" element={<AddJob />}></Route>
+          <Route path="profile" element={<Profile />}></Route>
+        </Route>
+        <Route path="/register" element={<Register />} />
+        <Route path="/landing" element={<Landing />} />
+        <Route
+          path="*"
+          element={
+            <div>
+              <Error />
+            </div>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+```
+
+###### ROOT/src/pages/ProtectedRoute.js
+
+New file
+```js
+import { Navigate } from 'react-router-dom';
+import { useAppContext } from '../context/appContext';
+
+const ProtectedRoute = ({ children }) => {
+  const { user } = useAppContext();
+
+  if (!user) {
+    return <Navigate to="landing" />;
+  }
+  return children;
+};
+export default ProtectedRoute;
+
+
+```
+
+###### ROOT/client/src/pages/index.js
+
+
+```js
+import Error from './Error';
+import Landing from './Landing';
+import Register from './Register';
+import ProtectedRoute from './ProtectedRoute'; // <--
+
+export { Error, Landing, Register, ProtectedRoute }; // <--
+
+```
+
+
+---
+
+</details>
+
+
+
+
 ````
