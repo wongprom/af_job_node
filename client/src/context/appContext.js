@@ -10,6 +10,7 @@ import {
   LOGIN_USER_BEGIN,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_ERROR,
+  TOGGLE_SIDEBAR,
 } from './actions';
 const AppContext = createContext();
 
@@ -28,7 +29,9 @@ export const initialState = {
   token: token,
   userLocation: userLocation || '',
   jobLocation: userLocation || '',
+  showSidebar: false,
 };
+
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -103,6 +106,10 @@ const AppProvider = ({ children }) => {
     clearAlert();
   };
 
+  const toggleSidebar = () => {
+    dispatch({ type: TOGGLE_SIDEBAR });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -110,6 +117,7 @@ const AppProvider = ({ children }) => {
         loginUser,
         displayAlert,
         registerUser,
+        toggleSidebar,
       }}
     >
       {children}
