@@ -53,9 +53,9 @@ const AppProvider = ({ children }) => {
   };
 
   const removeUserFromLocalStorage = () => {
-    localStorage.removeItem(user);
-    localStorage.removeItem(token);
-    localStorage.removeItem(location);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('location');
   };
 
   const registerUser = async (currentUser) => {
