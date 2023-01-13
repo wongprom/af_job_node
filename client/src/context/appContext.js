@@ -11,10 +11,9 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_ERROR,
   TOGGLE_SIDEBAR,
+  LOGOUT_USER,
 } from './actions';
 const AppContext = createContext();
-
-const location = 'Having issue with eslint';
 
 const token = localStorage.getItem('token');
 const user = localStorage.getItem('user');
@@ -110,6 +109,11 @@ const AppProvider = ({ children }) => {
     dispatch({ type: TOGGLE_SIDEBAR });
   };
 
+  const logoutUser = () => {
+    dispatch({ type: LOGOUT_USER });
+    removeUserFromLocalStorage();
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -118,6 +122,7 @@ const AppProvider = ({ children }) => {
         displayAlert,
         registerUser,
         toggleSidebar,
+        logoutUser,
       }}
     >
       {children}

@@ -1,3 +1,4 @@
+import { initialState } from './appContext';
 import {
   CLEAR_ALERT,
   DISPLAY_ALERT,
@@ -8,6 +9,7 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_ERROR,
   TOGGLE_SIDEBAR,
+  LOGOUT_USER,
 } from './actions';
 
 const reducer = (state, action) => {
@@ -89,6 +91,16 @@ const reducer = (state, action) => {
     return {
       ...state,
       showSidebar: !state.showSidebar,
+    };
+  }
+  if (action.type === LOGOUT_USER) {
+    console.log('LOGOUT_USER');
+    return {
+      ...initialState,
+      user: null,
+      token: null,
+      userLocation: '',
+      jobLocation: '',
     };
   }
 
