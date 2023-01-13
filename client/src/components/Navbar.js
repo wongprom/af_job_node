@@ -6,6 +6,7 @@ import Wrapper from '../assets/wrappers/Navbar';
 
 const Navbar = () => {
   const { toggleSidebar } = useAppContext();
+  const [showLogout, setShowLogout] = useState(false);
 
   return (
     <Wrapper>
@@ -20,12 +21,12 @@ const Navbar = () => {
         </div>
 
         <div className="btn-container">
-          <button className="btn" onClick={() => console.log('show logout')}>
+          <button className="btn" onClick={() => setShowLogout(!showLogout)}>
             <FaUserCircle />
             Jim
             <FaCaretDown />
           </button>
-          <div className="dropdown show-dropdown">
+          <div className={showLogout ? 'dropdown show-dropdown' : 'dropdown'}>
             <button
               onClick={() => console.log('logout user')}
               className="dropdown-btn"
