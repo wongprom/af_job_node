@@ -2356,7 +2356,7 @@ export { Error, Landing, Register, ProtectedRoute }; // <--
 ## Auth - Server Setup
 
 <details>
-  <summary>Aut setup</summary>
+  <summary>Auth setup</summary>
 
 Setup this middleware as a protected Route for updateUser
 
@@ -2432,3 +2432,41 @@ export default auth;
 ```
 
 ---
+
+</details>
+
+<details>
+  <summary>Complete user auth</summary>
+
+###### ROOT/middleware/auth.js
+
+```js
+import jwt from 'jsonwebtoken'; // <--
+import { UnAuthenticatedError } from '../errors/index.js';
+
+const auth = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer')) {
+    // <--
+    throw new UnAuthenticatedError('Authentication Invalid');
+  }
+
+  const token = authHeader.split(' ')[1]; // "Bearer ghoul567567h" => ["ghoul567567h"]
+  try {
+    // <-- try/catch
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('payload', payload);
+    // req.user = payload;
+    req.user = { userId: payload.userId }; // <-- add user to req response
+    next();
+  } catch (error) {
+    throw new UnAuthenticatedError('Authentication Invalid');
+  }
+};
+
+export default auth;
+```
+
+---
+
+</details>
