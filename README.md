@@ -2766,3 +2766,75 @@ export { AppProvider };
 ---
 
 </details>
+
+<details>
+  <summary>Global approach - Bearer Token</summary>
+
+###### ROOT/client/src/context/appContext.js
+
+Demo on updateUser func
+
+```js
+import { useReducer, useContext, createContext } from 'react';
+import axios from 'axios';
+import reducer from './reducer';
+
+const AppContext = createContext();
+
+export const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: userLocation || '',
+  jobLocation: userLocation || '',
+  showSidebar: false,
+};
+
+const AppProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // set global headers as default
+  axios.defaults.headers['Authorization'] = `Bearer ${state.token}`;
+
+  const updateUser = async (currentUser) => {
+    try {
+      const { data } = await axios.patch(
+        '/api/v1/auth/updateUser',
+        currentUser
+      );
+      console.log(data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        loginUser,
+        displayAlert,
+        registerUser,
+        toggleSidebar,
+        logoutUser,
+        updateUser,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+---
+
+</details>
