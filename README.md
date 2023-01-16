@@ -2470,3 +2470,101 @@ export default auth;
 ---
 
 </details>
+
+## Update User - Server
+
+<details>
+  <summary>authController and User Schema</summary>
+
+###### ROOT/controllers/authController.js
+
+```js
+// ...some code
+const updateUser = async (req, res) => {
+  const { email, name, lastName, location } = req.body;
+
+  if (!email || !name || !lastName || !location) {
+    throw new BadRequestError('Please provide all values');
+  }
+
+  const user = await User.findOne({ _id: req.user.userId });
+
+  user.email = email;
+  user.name = name;
+  user.lastName = lastName;
+  user.location = location;
+
+  await user.save();
+
+  const token = user.createJWT();
+  res.status(StatusCodes.OK).json({
+    user,
+    token,
+    location: user.location,
+  });
+};
+export { register, login, updateUser };
+```
+
+###### ROOT/models/User.js
+
+```js
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Please provide name'],
+    minlength: 3,
+    maxlength: 20,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: [true, 'Please provide email'],
+    validate: {
+      validator: validator.isEmail,
+      message: 'Please provide a valid email',
+    },
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Please provide password'],
+    minlength: 6,
+    select: false,
+  },
+  lastName: {
+    type: String,
+    maxlength: 20,
+    trim: true,
+    default: 'lastName',
+  },
+  location: {
+    type: String,
+    maxlength: 20,
+    trim: true,
+    default: 'my city',
+  },
+});
+
+// ...some code
+
+UserSchema.pre('save', async function () {
+  //console.log('this.modifiedPaths => ', this.modifiedPaths());
+  //console.log('this.isModified => ', this.isModified('name'));
+  if (!this.isModified('password')) return;
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+// ...some code
+
+export default mongoose.model('User', UserSchema);
+```
+
+---
+
+</details>
