@@ -2689,3 +2689,80 @@ export { AppProvider };
 ---
 
 </details>
+
+## Axios - different approaches
+
+<details>
+  <summary>Manual approach - Bearer Token</summary>
+
+###### ROOT/client/src/context/appContext.js
+
+Demo on updateUser func
+
+```js
+import { useReducer, useContext, createContext } from 'react';
+import axios from 'axios';
+import reducer from './reducer';
+
+const AppContext = createContext();
+
+export const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: userLocation || '',
+  jobLocation: userLocation || '',
+  showSidebar: false,
+};
+
+const AppProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Check headers thingy with Bearer...
+  const updateUser = async (currentUser) => {
+    try {
+      const { data } = await axios.patch(
+        '/api/v1/auth/updateUser',
+        currentUser,
+        {
+          headers: {
+            Authorization: `Bearer ${state.token}`,
+          },
+        }
+      );
+      console.log(data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        loginUser,
+        displayAlert,
+        registerUser,
+        toggleSidebar,
+        logoutUser,
+        updateUser,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+---
+
+</details>
