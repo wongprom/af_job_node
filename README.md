@@ -1,7 +1,7 @@
-## MongoDB, mongoose, API stuff
+## MongoDB, mongoose, API and Server stuff
 
 <details>
-  <summary>template</summary>
+  <summary>---template---</summary>
   [name](link)
 
 ```
@@ -47,8 +47,7 @@ console.log(error);
 start();
 
 ````
-
- `import connectDB from './db/connect.js';` , comes from
+import connectDB from './db/connect.js'; , comes from
 ###### db/connect.js
 ```js
 import mongoose from 'mongoose';
@@ -57,7 +56,8 @@ const connectDB = (url) => {
   return mongoose.connect(url);
 };
 export default connectDB;
-```
+````
+
 ---
 
 </details>
@@ -1583,9 +1583,9 @@ const AppProvider = ({ children }) => {
   };
   // new removeUserFromLocalStorage
   const removeUserFromLocalStorage = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("location");
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('location');
   };
 
   const registerUser = async (currentUser) => {
@@ -1941,9 +1941,9 @@ const AppProvider = ({ children }) => {
   };
 
   const removeUserFromLocalStorage = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("location");
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('location');
   };
 
   const registerUser = async (currentUser) => {
@@ -2221,9 +2221,10 @@ export default Register;
   <summary>Setup nested routes</summary>
 Example basic  nested structure...
 
-*(http://localhost:3000/stats)*
-*(http://localhost:3000/all-jobs)*
-*(http://localhost:3000/add-job)*
+_(http://localhost:3000/stats)_
+_(http://localhost:3000/all-jobs)_
+_(http://localhost:3000/add-job)_
+
 ###### App.js
 
 ```js
@@ -2267,7 +2268,6 @@ function App() {
 
 <details>
   <summary>Create protected route and navigate user if logged in or not</summary>
-
 
 ###### App.js
 
@@ -2315,12 +2315,12 @@ function App() {
 }
 
 export default App;
-
 ```
 
 ###### ROOT/src/pages/ProtectedRoute.js
 
 New file
+
 ```js
 import { Navigate } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
@@ -2334,12 +2334,9 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 export default ProtectedRoute;
-
-
 ```
 
 ###### ROOT/client/src/pages/index.js
-
 
 ```js
 import Error from './Error';
@@ -2348,15 +2345,12 @@ import Register from './Register';
 import ProtectedRoute from './ProtectedRoute'; // <--
 
 export { Error, Landing, Register, ProtectedRoute }; // <--
-
 ```
-
 
 ---
 
 </details>
 
+<br>
 
-
-
-````
+## Auth - Server Setup
