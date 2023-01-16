@@ -2408,3 +2408,27 @@ app.use('/api/v1/jobs', authenticateUser, jobsRouter); // <-- add authenticateUs
 ---
 
 </details>
+
+<details>
+  <summary>Setup UnAuthenticatedError if user not auth</summary>
+
+##### _These and severely other server thingy checks are using with PostMan_
+
+###### ROOT/middleware/auth.js
+
+```js
+import { UnAuthenticatedError } from '../errors/index.js';
+
+const auth = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    throw new UnAuthenticatedError('Authentication Invalid');
+  }
+  console.log('auth is running');
+  next();
+};
+
+export default auth;
+```
+
+---
