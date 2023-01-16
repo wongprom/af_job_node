@@ -2354,3 +2354,57 @@ export { Error, Landing, Register, ProtectedRoute }; // <--
 <br>
 
 ## Auth - Server Setup
+
+<details>
+  <summary>Aut setup</summary>
+
+Setup this middleware as a protected Route for updateUser
+
+###### ROOT/middleware/auth.js
+
+New auth.js
+
+```js
+const auth = async (req, res, next) => {
+  console.log('auth is running');
+  next();
+};
+
+export default auth;
+```
+
+###### ROOT/routes/authRouter.js
+
+```js
+import express from 'express';
+import { register, login, updateUser } from '../controllers/authController.js';
+import authenticateUser from '../middleware/auth.js'; // <--
+
+const router = express.Router();
+
+router.route('/register').post(register); // <-- public route
+router.route('/login').post(login); // <-- public route
+router.route('/updateUser').patch(authenticateUser, updateUser); // <-- auth check !!
+
+export default router;
+```
+
+###### ROOT/server.js
+
+```js
+//...some code
+// Middleware
+import notFoundMiddleware from './middleware/not-found.js';
+import errorHandlerMiddleware from './middleware/error-handler.js';
+import authenticateUser from './middleware/auth.js'; // <--
+
+//...some code
+
+app.use('/api/v1/jobs', authenticateUser, jobsRouter); // <-- add authenticateUser before jobsRouter
+
+//...some code
+```
+
+---
+
+</details>
