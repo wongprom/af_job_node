@@ -3737,3 +3737,147 @@ export default AddJob;
 ---
 
 </details>
+
+<details>
+  <summary>Create component for select input</summary>
+
+New component FormRowSelect
+
+###### ROOT/client/src/components/FormRowSelect.js
+
+```js
+const FormRowSelect = ({ labelText, name, value, handleChange, list }) => {
+  return (
+    <div className="form-row">
+      <label htmlFor={name} className="form-label">
+        {labelText || name}
+      </label>
+
+      <select
+        name={name}
+        value={value}
+        onChange={handleChange}
+        className="form-select"
+      >
+        {list.map((itemValue, index) => {
+          return (
+            <option key={index} value={itemValue}>
+              {itemValue}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
+};
+
+export default FormRowSelect;
+```
+
+Import/export FormRowSelect
+
+###### ROOT/client/src/components/index.js
+
+```js
+import Logo from './Logo';
+import FormRow from './FormRow';
+import Alert from './Alert';
+import Navbar from './Navbar';
+import BigSidebar from './BigSidebar';
+import SmallSidebar from './SmallSidebar';
+import FormRowSelect from './FormRowSelect';
+
+export {
+  Logo,
+  FormRow,
+  Navbar,
+  BigSidebar,
+  SmallSidebar,
+  Alert,
+  FormRowSelect,
+};
+```
+
+Import FormRowSelect component and return it with props
+
+###### ROOT/client/src/pages/dashboard/AddJob.js
+
+```js
+import { FormRow, Alert, FormRowSelect } from '../../components'; // <--
+import { useAppContext } from '../../context/appContext';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+
+const AddJob = () => {
+  const {
+    isEditing,
+    showAlert,
+    displayAlert,
+    position,
+    company,
+    jobLocation,
+    jobType,
+    jobTypeOptions,
+    status,
+    statusOptions,
+  } = useAppContext();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!position || !company || !jobLocation) {
+      displayAlert();
+      return;
+    }
+    console.log('create job');
+  };
+
+  const handleJobInput = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    console.log(`${name}:${value}`);
+  };
+
+  return (
+    <Wrapper>
+      <form className="form">
+        <h3>{isEditing ? 'edit job' : 'add job'} </h3>
+        {showAlert && <Alert />}
+        <div className="form-center">
+          {/* job type */}
+          {/* job type */}
+          <FormRowSelect
+            labelText="job type"
+            name="jobType"
+            value={jobType}
+            handleChange={handleJobInput}
+            list={jobTypeOptions}
+          />
+
+          {/* job status */}
+          <FormRowSelect
+            name="status"
+            value={status}
+            handleChange={handleJobInput}
+            list={statusOptions}
+          />
+          <div className="btn-container">
+            <button
+              className="btn btn-block submit-btn"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </Wrapper>
+  );
+};
+
+export default AddJob;
+```
+
+---
+
+</details>
