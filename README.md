@@ -3692,3 +3692,48 @@ export default AddJob;
 ```
 
 ---
+
+</details>
+
+<details>
+
+  <summary>Add input field for job-type selector</summary>
+
+###### ROOT/client/src/pages/dashboard/AddJob.js
+
+```js
+// ...some code
+{
+  /* job type */
+}
+<div className="form-row">
+  <label htmlFor="jobType" className="form-label">
+    job type
+  </label>
+
+  <select
+    name="jobType"
+    value={jobType}
+    onChange={handleJobInput}
+    className="form-select"
+  >
+    {jobTypeOptions.map((itemValue, index) => {
+      return (
+        <option key={index} value={itemValue}>
+          {itemValue}
+        </option>
+      );
+    })}
+  </select>
+</div>;
+
+{
+  /* job status */
+}
+
+// ...some code
+```
+
+---
+
+</details>
