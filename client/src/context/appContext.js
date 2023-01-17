@@ -45,7 +45,6 @@ const AppProvider = ({ children }) => {
   // Request Interceptors
   authFetch.interceptors.request.use(
     (config) => {
-      console.log('.interceptors.request');
       config.headers['Authorization'] = `Bearer ${state.token}`;
       return config;
     },
@@ -57,13 +56,11 @@ const AppProvider = ({ children }) => {
   // Response Interceptors
   authFetch.interceptors.response.use(
     (response) => {
-      console.log('.interceptors.response');
       return response;
     },
     (error) => {
-      console.log(error.response);
       if (error.response.status === 401) {
-        console.log('AUTH ERROR 401');
+        logoutUser();
       }
       return Promise.reject(error);
     }
@@ -96,7 +93,6 @@ const AppProvider = ({ children }) => {
     dispatch({ type: REGISTER_USER_BEGIN });
     try {
       const response = await axios.post('/api/v1/auth/register', currentUser);
-      console.log('response', response);
       const { user, token, location } = response.data;
       dispatch({
         type: REGISTER_USER_SUCCESS,
@@ -162,10 +158,12 @@ const AppProvider = ({ children }) => {
       });
       addUserToLocalStorage({ user, token, location });
     } catch (error) {
-      dispatch({
-        type: UPDATE_USER_ERROR,
-        payload: { msg: error.response.data.msg },
-      });
+      if (error.response.status !== 401) {
+        dispatch({
+          type: UPDATE_USER_ERROR,
+          payload: { msg: error.response.data.msg },
+        });
+      }
     }
     clearAlert();
   };

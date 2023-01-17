@@ -3396,3 +3396,62 @@ export default reducer;
 ---
 
 </details>
+
+<details>
+  <summary>401 Error - user not Authorized</summary><br>
+
+Logout user when not Authorized, instead of display error message. The often case is that token have expired.
+
+###### ROOT/client/src/context/appContext.js
+
+```js
+// ...Some code
+
+// Response Interceptors
+authFetch.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 401) {
+      logoutUser(); // <-- Logout user
+    }
+    return Promise.reject(error);
+  }
+);
+
+// ...Some code
+```
+
+```js
+// ...Some code
+
+const updateUser = async (currentUser) => {
+  dispatch({
+    type: UPDATE_USER_BEGIN,
+  });
+  try {
+    const { data } = await authFetch.patch('/auth/updateUser', currentUser);
+    const { user, location, token } = data;
+    dispatch({
+      type: UPDATE_USER_SUCCESS,
+      payload: { user, token, location },
+    });
+    addUserToLocalStorage({ user, token, location });
+  } catch (error) {
+    // New if check...
+    if (error.response.status !== 401) {
+      dispatch({
+        type: UPDATE_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+  }
+  clearAlert();
+};
+// ...Some code
+```
+
+---
+
+</details>
