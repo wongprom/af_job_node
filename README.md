@@ -3881,3 +3881,209 @@ export default AddJob;
 ---
 
 </details>
+
+<details>
+  <summary> 🔥 Create func to handle global value  </summary>
+
+[JS Nuggets Dynamic Object Keys](https://youtu.be/_qxCYtWm0tw)
+
+###### ROOT/client/src/context/actions.js
+
+```js
+export const DISPLAY_ALERT = 'SHOW_ALERT';
+export const CLEAR_ALERT = 'CLEAR_ALERT';
+
+export const REGISTER_USER_BEGIN = 'REGISTER_USER_BEGIN';
+export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
+export const REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
+
+export const LOGIN_USER_BEGIN = 'LOGIN_USER_BEGIN';
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
+export const LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
+
+export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR';
+export const LOGOUT_USER = 'LOGOUT_USER';
+
+export const UPDATE_USER_BEGIN = 'UPDATE_USER_BEGIN';
+export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
+export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
+
+export const HANDLE_CHANGE = 'HANDLE_CHANGE'; // <--
+```
+
+###### ROOT/client/src/context/appContext.js
+
+```js
+// some code...
+import {
+  CLEAR_ALERT,
+  DISPLAY_ALERT,
+  REGISTER_USER_BEGIN,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_ERROR,
+  LOGIN_USER_BEGIN,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_ERROR,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER,
+  UPDATE_USER_BEGIN,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_ERROR,
+  HANDLE_CHANGE, // <--
+} from './actions';
+// some code ...
+const AppProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // some code...
+
+  // New handleChange
+  const handleChange = ({ name, value }) => {
+    dispatch({ type: HANDLE_CHANGE, payload: { name, value } });
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        loginUser,
+        displayAlert,
+        registerUser,
+        toggleSidebar,
+        logoutUser,
+        updateUser,
+        handleChange, // <--
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+###### ROOT/client/src/context/reducer.js
+
+```js
+// some code...
+import {
+  CLEAR_ALERT,
+  DISPLAY_ALERT,
+  REGISTER_USER_BEGIN,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_ERROR,
+  LOGIN_USER_BEGIN,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_ERROR,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER,
+  UPDATE_USER_BEGIN,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_ERROR,
+  HANDLE_CHANGE, // <--
+} from './actions';
+// some code...
+if (action.type === HANDLE_CHANGE) {
+  return {
+    ...state,
+    [action.payload.name]: action.payload.value,
+  };
+}
+// some code...
+```
+
+###### ROOT/client/src/pages/dashboard/AddJob.js
+
+```js
+import { FormRow, Alert, FormRowSelect } from '../../components';
+import { useAppContext } from '../../context/appContext';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+
+const AddJob = () => {
+  const {
+    isEditing,
+    showAlert,
+    displayAlert,
+    position,
+    company,
+    jobLocation,
+    jobType,
+    jobTypeOptions,
+    status,
+    statusOptions,
+    handleChange, // <--
+  } = useAppContext();
+
+  // some code...
+
+  const handleJobInput = (e) => {
+    // handleChange
+    handleChange({ name: e.target.name, value: e.target.value });
+  };
+
+  return (
+    <Wrapper>
+      <form className="form">
+        <h3>{isEditing ? 'edit job' : 'add job'} </h3>
+        {showAlert && <Alert />}
+        <div className="form-center">
+          <FormRow
+            type="text"
+            name="position"
+            value={position}
+            onChange={handleJobInput}
+          />
+          <FormRow
+            type="text"
+            name="company"
+            value={company}
+            onChange={handleJobInput}
+          />
+          <FormRow
+            type="text"
+            labelText="location"
+            name="jobLocation"
+            value={jobLocation}
+            onChange={handleJobInput}
+          />
+
+          {/* job type */}
+          <FormRowSelect
+            labelText="job type"
+            name="jobType"
+            value={jobType}
+            handleChange={handleJobInput}
+            list={jobTypeOptions}
+          />
+
+          {/* job status */}
+          <FormRowSelect
+            name="status"
+            value={status}
+            handleChange={handleJobInput}
+            list={statusOptions}
+          />
+          <div className="btn-container">
+            <button
+              className="btn btn-block submit-btn"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </Wrapper>
+  );
+};
+
+export default AddJob;
+```
+
+---
