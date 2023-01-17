@@ -12,6 +12,9 @@ import {
   LOGIN_USER_ERROR,
   TOGGLE_SIDEBAR,
   LOGOUT_USER,
+  UPDATE_USER_BEGIN,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_ERROR,
 } from './actions';
 const AppContext = createContext();
 
@@ -43,7 +46,7 @@ const AppProvider = ({ children }) => {
   authFetch.interceptors.request.use(
     (config) => {
       console.log('.interceptors.request');
-      // config.headers['Authorization'] = `Bearer ${state.token}`;
+      config.headers['Authorization'] = `Bearer ${state.token}`;
       return config;
     },
     (error) => {
@@ -147,12 +150,24 @@ const AppProvider = ({ children }) => {
   };
 
   const updateUser = async (currentUser) => {
+    dispatch({
+      type: UPDATE_USER_BEGIN,
+    });
     try {
       const { data } = await authFetch.patch('/auth/updateUser', currentUser);
-      console.log('🚀 ~ file: appContext.js:152 ~ updateUser ~ data', data);
+      const { user, location, token } = data;
+      dispatch({
+        type: UPDATE_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+      addUserToLocalStorage({ user, token, location });
     } catch (error) {
-      console.log(error.response);
+      dispatch({
+        type: UPDATE_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
     }
+    clearAlert();
   };
 
   return (
