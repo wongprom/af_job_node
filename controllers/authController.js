@@ -26,6 +26,7 @@ const register = async (req, res) => {
     location: user.location,
   });
 };
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -43,9 +44,8 @@ const login = async (req, res) => {
   const token = user.createJWT();
   user.password = undefined;
   res.status(StatusCodes.OK).json({ user, token, location: user.location });
-
-  // res.send('login');
 };
+
 const updateUser = async (req, res) => {
   const { email, name, lastName, location } = req.body;
   if (!email || !name || !lastName || !location) {
@@ -60,10 +60,6 @@ const updateUser = async (req, res) => {
   user.location = location;
 
   await user.save();
-
-  // various setups
-  // in this case only id
-  // if other properties included, must re-generate
 
   const token = user.createJWT();
   res.status(StatusCodes.OK).json({
