@@ -3554,3 +3554,52 @@ export { createJob, deleteJob, getAllJobs, updateJob, showStats };
 ---
 
 </details>
+
+<details>
+  <summary>Update initialState with "job" values</summary>
+
+###### ROOT/client/src/context/appContext.js
+
+InitialState before update
+
+```js
+export const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: userLocation || '',
+  jobLocation: userLocation || '',
+  showSidebar: false,
+};
+```
+
+InitialState after update
+
+```js
+export const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: userLocation || '',
+  jobLocation: userLocation || '',
+  showSidebar: false,
+  isEditing: false,
+  editJobId: '',
+  position: '',
+  company: '',
+  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
+  jobType: 'full-time',
+  statusOptions: ['pending', 'interview', 'declined'],
+  status: 'pending',
+};
+```
+
+---
+
+</details>

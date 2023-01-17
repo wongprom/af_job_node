@@ -30,8 +30,16 @@ export const initialState = {
   user: user ? JSON.parse(user) : null,
   token: token,
   userLocation: userLocation || '',
-  jobLocation: userLocation || '',
   showSidebar: false,
+  isEditing: false,
+  editJobId: '',
+  position: '',
+  company: '',
+  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
+  jobType: 'full-time',
+  statusOptions: ['pending', 'interview', 'declined'],
+  status: 'pending',
+  jobLocation: userLocation || '',
 };
 
 const AppProvider = ({ children }) => {
