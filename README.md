@@ -3461,7 +3461,6 @@ const updateUser = async (currentUser) => {
 <details>
   <summary>Create Schema for Job with mongoose</summary>
 
-
 ###### ROOT/models/Job.js
 
 ```js
@@ -3504,6 +3503,52 @@ const JobSchema = new mongoose.Schema(
   { timestamps: true }
 );
 export default mongoose.model('Job', JobSchema);
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Update jobsController</summary>
+
+Update func createJob
+
+###### ROOT/controllers/jobsController.js
+
+```js
+// New imports, ALL of them
+import Job from '../models/Job.js';
+import { StatusCodes } from 'http-status-codes';
+import { BadRequestError, UnAuthenticatedError } from '../errors/index.js';
+
+// Content in func createJob
+const createJob = async (req, res) => {
+  const { position, company } = req.body;
+
+  if (!position || !company) {
+    throw new BadRequestError('Please provide all values');
+  }
+  req.body.createdBy = req.user.userId;
+
+  const job = await Job.create(req.body);
+  res.status(StatusCodes.CREATED).json({ job });
+};
+
+const deleteJob = async (req, res) => {
+  res.send('deleteJob');
+};
+const getAllJobs = async (req, res) => {
+  res.send('getAllJobs');
+};
+const updateJob = async (req, res) => {
+  res.send('updateJob');
+};
+const showStats = async (req, res) => {
+  res.send('showStats');
+};
+
+export { createJob, deleteJob, getAllJobs, updateJob, showStats };
 ```
 
 ---
