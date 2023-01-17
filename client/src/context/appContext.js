@@ -34,12 +34,38 @@ export const initialState = {
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Axios Interceptors
   const authFetch = axios.create({
     baseURL: '/api/v1',
-    headers: {
-      Authorization: `Bearer ${state.token}`,
-    },
   });
+
+  // Request Interceptors
+  authFetch.interceptors.request.use(
+    (config) => {
+      console.log('.interceptors.request');
+      // config.headers['Authorization'] = `Bearer ${state.token}`;
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  // Response Interceptors
+  authFetch.interceptors.response.use(
+    (response) => {
+      console.log('.interceptors.response');
+      return response;
+    },
+    (error) => {
+      console.log(error.response);
+      if (error.response.status === 401) {
+        console.log('AUTH ERROR 401');
+      }
+      return Promise.reject(error);
+    }
+  );
+
   const displayAlert = () => {
     dispatch({ type: DISPLAY_ALERT });
     clearAlert();
@@ -123,7 +149,7 @@ const AppProvider = ({ children }) => {
   const updateUser = async (currentUser) => {
     try {
       const { data } = await authFetch.patch('/auth/updateUser', currentUser);
-      console.log(data);
+      console.log('🚀 ~ file: appContext.js:152 ~ updateUser ~ data', data);
     } catch (error) {
       console.log(error.response);
     }

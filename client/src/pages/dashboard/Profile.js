@@ -14,9 +14,11 @@ const Profile = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !email || !lastName || !location) {
+      console.log('handleSubmit');
       // test and remove temporary
-      displayAlert();
-      return;
+
+      // displayAlert();
+      // return;
     }
 
     updateUser({ name, email, lastName, location });

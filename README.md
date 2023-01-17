@@ -2916,3 +2916,106 @@ export { AppProvider };
 ---
 
 </details>
+
+<details>
+  <summary>Axios interceptors</summary>
+
+[https://axios-http.com/docs/interceptors](https://axios-http.com/docs/interceptors)
+
+Demo on updateUser func
+
+###### ROOT/client/src/context/appContext.js
+
+```js
+import { useReducer, useContext, createContext } from 'react';
+import axios from 'axios';
+import reducer from './reducer';
+
+const AppContext = createContext();
+
+export const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: userLocation || '',
+  jobLocation: userLocation || '',
+  showSidebar: false,
+};
+
+const AppProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Axios create instance
+  const authFetch = axios.create({
+    baseURL: '/api/v1',
+  });
+
+  // Request Interceptors
+  authFetch.interceptors.request.use(
+    (config) => {
+      console.log('.interceptors.request');
+      config.headers['Authorization'] = `Bearer ${state.token}`;
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  // Response Interceptors
+  authFetch.interceptors.response.use(
+    (response) => {
+      console.log('.interceptors.response');
+      return response;
+    },
+    (error) => {
+      console.log(error.response);
+      if (error.response.status === 401) {
+        console.log('AUTH ERROR 401');
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  const updateUser = async (currentUser) => {
+    try {
+      const { data } = await authFetch.patch(
+        '/api/v1/auth/updateUser',
+        currentUser
+      );
+      console.log(data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        loginUser,
+        displayAlert,
+        registerUser,
+        toggleSidebar,
+        logoutUser,
+        updateUser,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+---
+
+</details>
