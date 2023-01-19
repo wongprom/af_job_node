@@ -4785,3 +4785,47 @@ export default AllJobs;
 ---
 
 </details>
+
+<details>
+  <summary>Formate date with package Moment</summary><br>
+
+[https://momentjs.com/](https://momentjs.com/)
+
+```
+npm install moment
+```
+
+###### Root/client/src/components/Job.js
+
+```js
+// Before update Job
+const Job = ({ company }) => {
+  return (
+    <div>
+      <h5>{company}</h5>
+    </div>
+  );
+};
+export default Job;
+```
+
+```js
+// Updated Job
+import moment from 'moment'; // <--
+
+const Job = ({ company, createdAt }) => {
+  let date = moment(createdAt); // <--
+  date = date.format('DD/MM/YYYY'); // --> 19/01/2023
+  return (
+    <div>
+      <h5>{company}</h5>
+      <h5>{date}</h5>
+    </div>
+  );
+};
+export default Job;
+```
+
+---
+
+</details>
