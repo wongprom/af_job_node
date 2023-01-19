@@ -241,7 +241,8 @@ const AppProvider = ({ children }) => {
       });
     } catch (error) {
       console.log(error.response);
-      logoutUser();
+      // Toggle logout() for testing
+      // logoutUser();
     }
     clearAlert();
   };

@@ -4640,3 +4640,148 @@ if (action.type === GET_JOBS_SUCCESS) {
 ---
 
 </details>
+
+## Setup AllJobs Page - Frontend
+
+<details>
+  <summary>Lets render some data from AllJobs Page with new components</summary><br>
+
+- Create/update some components...
+- Render company name
+
+<br>
+New component SearchContainer
+
+###### Root/client/src/components/SearchContainer.js
+
+```js
+const SearchContainer = () => {
+  return <div>SearchContainer</div>;
+};
+export default SearchContainer;
+```
+
+New component Job
+
+###### Root/client/src/components/Job.js
+
+```js
+const Job = ({ company }) => {
+  return (
+    <div>
+      <h5>{company}</h5>
+    </div>
+  );
+};
+export default Job;
+```
+
+New component JobInfo
+
+###### Root/client/src/components/JobInfo.js
+
+```js
+const JobInfo = () => {
+  return <div>JobInfo</div>;
+};
+export default JobInfo;
+```
+
+New component JobsContainer
+
+###### Root/client/src/components/JobsContainer.js
+
+```js
+import { useAppContext } from '../context/appContext';
+import { useEffect } from 'react';
+import Loading from './Loading';
+import Job from './Job';
+import Wrapper from '../assets/wrappers/JobsContainer';
+
+const JobsContainer = () => {
+  const { getJobs, jobs, isLoading, page, totalJobs } = useAppContext();
+  useEffect(() => {
+    getJobs();
+  }, []);
+
+  if (isLoading) {
+    return <Loading center />;
+  }
+
+  if (jobs.length === 0) {
+    return (
+      <Wrapper>
+        <h2>No jobs to display...</h2>
+      </Wrapper>
+    );
+  }
+  return (
+    <Wrapper>
+      <h5>
+        {totalJobs} job{jobs.length > 1 && 's'} found
+      </h5>
+      <div className="jobs">
+        {jobs.map((job) => {
+          return <Job key={job._id} {...job} />;
+        })}
+      </div>
+    </Wrapper>
+  );
+};
+
+export default JobsContainer;
+```
+
+New component Loading
+
+###### Root/client/src/components/Loading.js
+
+```js
+const Loading = ({ center }) => {
+  return <div className={center ? 'loading loading-center' : 'loading'}></div>;
+};
+
+export default Loading;
+```
+
+New component SearchContainer
+
+###### Root/client/src/components/SearchContainer.js
+
+```js
+const SearchContainer = () => {
+  return <div>SearchContainer</div>;
+};
+export default SearchContainer;
+```
+
+Update component JobsContainer
+
+###### Root/client/src/pages/dashboard/AllJobs.js
+
+```js
+// Before update
+const AllJobs = () => {
+  return <div>AllJobs</div>;
+};
+export default AllJobs;
+```
+
+```js
+// After update
+import { JobsContainer, SearchContainer } from '../../components';
+const AllJobs = () => {
+  return (
+    <>
+      <SearchContainer />
+      <JobsContainer />
+    </>
+  );
+};
+
+export default AllJobs;
+```
+
+---
+
+</details>
