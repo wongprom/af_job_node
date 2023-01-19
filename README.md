@@ -1,7 +1,7 @@
 ## MongoDB, mongoose, API and Server stuff
 
 <details>
-  <summary>---template---</summary>
+  <summary>---template---</summary><br>
   [name](link)
 
 ```
@@ -4069,6 +4069,187 @@ const AddJob = () => {
             list={statusOptions}
           />
           <div className="btn-container">
+            <button
+              className="btn btn-block submit-btn"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </Wrapper>
+  );
+};
+
+export default AddJob;
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Clear values in add job form</summary><br>
+
+Clear form with an action.
+⚠️ Place Clear button AFTER the submit button in the form, otherwise the the functionality for Enter button on keyboard won't work properly
+
+###### ROOT/client/src/context/actions.js
+
+```js
+// some code...
+export const CLEAR_VALUES = 'CLEAR_VALUES';
+```
+
+###### ROOT/client/src/context/appContext.js
+
+```js
+import {
+  // some imports....
+  CLEAR_VALUES,
+} from './actions';
+// some code...
+
+const clearValues = () => {
+  dispatch({
+    type: CLEAR_VALUES,
+  });
+};
+
+return (
+  <AppContext.Provider
+    value={{
+      ...state,
+      loginUser,
+      displayAlert,
+      registerUser,
+      toggleSidebar,
+      logoutUser,
+      updateUser,
+      handleChange,
+      clearValues, // <--
+    }}
+  >
+    {children}
+  </AppContext.Provider>
+);
+// some code...
+```
+
+###### ROOT/client/src/context/reducer.js
+
+```js
+import {
+  // some imports....
+  CLEAR_VALUES,
+} from './actions';
+
+// some code...
+
+if (action.type === CLEAR_VALUES) {
+  const initialState = {
+    isEditing: false,
+    editJobId: '',
+    position: '',
+    company: '',
+    jobLocation: state.userLocation,
+    jobType: 'full-time',
+    status: 'pending',
+  };
+  return { ...state, ...initialState };
+}
+// some code...
+```
+
+###### ROOT/client/src/pages/dashboard/AddJob.js
+
+```js
+import { FormRow, Alert, FormRowSelect } from '../../components';
+import { useAppContext } from '../../context/appContext';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+
+const AddJob = () => {
+  const {
+    isEditing,
+    showAlert,
+    displayAlert,
+    position,
+    company,
+    jobLocation,
+    jobType,
+    jobTypeOptions,
+    status,
+    statusOptions,
+    handleChange,
+    clearValues, // <--
+  } = useAppContext();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!position || !company || !jobLocation) {
+      displayAlert();
+      return;
+    }
+    console.log('create job');
+  };
+
+  const handleJobInput = (e) => {
+    handleChange({ name: e.target.name, value: e.target.value });
+  };
+
+  return (
+    <Wrapper>
+      <form className="form">
+        <h3>{isEditing ? 'edit job' : 'add job'} </h3>
+        {showAlert && <Alert />}
+        <div className="form-center">
+          <FormRow
+            type="text"
+            name="position"
+            value={position}
+            onChange={handleJobInput}
+          />
+          <FormRow
+            type="text"
+            name="company"
+            value={company}
+            onChange={handleJobInput}
+          />
+          <FormRow
+            type="text"
+            labelText="location"
+            name="jobLocation"
+            value={jobLocation}
+            onChange={handleJobInput}
+          />
+
+          <FormRowSelect
+            labelText="job type"
+            name="jobType"
+            value={jobType}
+            handleChange={handleJobInput}
+            list={jobTypeOptions}
+          />
+
+          <FormRowSelect
+            name="status"
+            value={status}
+            handleChange={handleJobInput}
+            list={statusOptions}
+          />
+          <div className="btn-container">
+            <button
+              className="btn btn-block clear-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                clearValues();
+              }}
+            >
+              clear
+            </button>
             <button
               className="btn btn-block submit-btn"
               type="submit"
