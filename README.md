@@ -8,7 +8,7 @@
 npm install bcryptjs
 ```
 
-###### file-name.js
+###### Root/
 
 ```js
 
@@ -4268,3 +4268,205 @@ export default AddJob;
 ```
 
 ---
+
+</details>
+
+<details>
+  <summary>Submit/create new job</summary><br>
+- Create action
+- run func from handleSubmit
+
+###### Root/client/src/context/actions.js
+
+```js
+// some other imports
+export const CREATE_JOB_BEGIN = 'CREATE_JOB_BEGIN';
+export const CREATE_JOB_SUCCESS = 'CREATE_JOB_SUCCESS';
+export const CREATE_JOB_ERROR = 'CREATE_JOB_ERROR';
+```
+
+###### Root/client/src/context/appContext.js
+
+```js
+import {
+  // some other imports
+  CREATE_JOB_BEGIN,
+  CREATE_JOB_SUCCESS,
+  CREATE_JOB_ERROR,
+} from './actions';
+// some code....
+
+const AppProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Axios Instance
+  const authFetch = axios.create({
+    baseURL: '/api/v1',
+  });
+
+  // Request Interceptors
+  authFetch.interceptors.request.use(
+    (config) => {
+      config.headers['Authorization'] = `Bearer ${state.token}`;
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  // Response Interceptors
+  authFetch.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error.response.status === 401) {
+        logoutUser();
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  // some code...
+
+  // New createJob
+  const createJob = async () => {
+    dispatch({ type: CREATE_JOB_BEGIN });
+    try {
+      const { position, company, jobLocation, jobType, status } = state;
+      await authFetch.post('/jobs', {
+        company,
+        position,
+        jobLocation,
+        jobType,
+        status,
+      });
+
+      dispatch({
+        type: CREATE_JOB_SUCCESS,
+      });
+
+      dispatch({ type: CLEAR_VALUES });
+    } catch (error) {
+      if (error.response.status === 401) return;
+      dispatch({
+        type: CREATE_JOB_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+    clearAlert();
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        // SOme code
+        createJob,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+```
+
+###### Root/client/src/context/reducer.js
+
+```js
+import { initialState } from './appContext';
+import {
+  // some other imports
+  CREATE_JOB_BEGIN,
+  CREATE_JOB_SUCCESS,
+  CREATE_JOB_ERROR,
+} from './actions';
+
+const reducer = (state, action) => {
+  // some code...
+
+  if (action.type === CREATE_JOB_BEGIN) {
+    return {
+      ...state,
+      isLoading: true,
+    };
+  }
+
+  if (action.type === CREATE_JOB_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'success',
+      alertText: 'New Job Created!',
+    };
+  }
+
+  if (action.type === CREATE_JOB_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
+    };
+  }
+
+  throw new Error(`no such action :${action.type}`);
+};
+export default reducer;
+```
+
+###### Root/client/src/pages/dashboard/AddJob.js
+
+```js
+const {
+  isLoading,
+  isEditing,
+  showAlert,
+  displayAlert,
+  position,
+  company,
+  jobLocation,
+  jobType,
+  jobTypeOptions,
+  status,
+  statusOptions,
+  handleChange,
+  clearValues,
+  createJob,
+} = useAppContext();
+
+// some code ...
+const handleSubmit = (e) => {
+  e.preventDefault();
+  // toggle comment for testing
+  if (!position || !company || !jobLocation) {
+    displayAlert();
+    return;
+  }
+  if (isEditing) {
+    // eventually editJob()
+    return;
+  }
+  createJob();
+  console.log('create job');
+};
+// some code ...
+
+<button
+  className="btn btn-block submit-btn"
+  type="submit"
+  onClick={handleSubmit}
+  disabled={isLoading}
+>
+  submit
+</button>;
+
+// some code ...
+```
+
+---
+
+</details>
