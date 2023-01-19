@@ -22,7 +22,7 @@ const AddJob = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // toggle comment for testing
+    // toggle if check for testing
     if (!position || !company || !jobLocation) {
       displayAlert();
       return;

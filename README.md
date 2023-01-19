@@ -4470,3 +4470,37 @@ const handleSubmit = (e) => {
 ---
 
 </details>
+
+## Get All (users) Jobs - Server
+
+<details>
+  <summary>Get all jobs</summary><br>
+  Use postman for testing
+
+###### Root/controllers/jobsController.js
+
+```js
+import Job from '../models/Job.js';
+import { StatusCodes } from 'http-status-codes';
+import { BadRequestError, UnAuthenticatedError } from '../errors/index.js';
+
+// some code ...
+
+const getAllJobs = async (req, res) => {
+  const jobs = await Job.find({ createdBy: req.user.userId });
+  console.log('🚀 ~ file: jobsController.js:24 ~ getAllJobs ~ jobs', jobs);
+
+  res
+    .status(StatusCodes.OK)
+    .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+  res.send('getAllJobs');
+};
+
+// Some code....
+
+export { createJob, deleteJob, getAllJobs, updateJob, showStats };
+```
+
+---
+
+</details>
