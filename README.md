@@ -4504,3 +4504,139 @@ export { createJob, deleteJob, getAllJobs, updateJob, showStats };
 ---
 
 </details>
+
+## Get all jobs - frontend
+
+<details>
+  <summary>Get all jobs request </summary><br>
+
+###### Root/client/src/context/actions.js
+
+```js
+// ...Some code
+export const GET_JOBS_BEGIN = 'GET_JOBS_BEGIN';
+export const GET_JOBS_SUCCESS = 'GET_JOBS_SUCCESS';
+```
+
+###### Root/client/src/context/appContext.js
+
+```js
+import { useReducer, useContext, createContext, useEffect } from 'react';
+import axios from 'axios';
+import reducer from './reducer';
+import {
+  // some code...
+  GET_JOBS_BEGIN,
+  GET_JOBS_SUCCESS,
+} from './actions';
+const AppContext = createContext();
+
+// some code ....
+
+export const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: userLocation || '',
+  showSidebar: false,
+  isEditing: false,
+  editJobId: '',
+  position: '',
+  company: '',
+  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
+  jobType: 'full-time',
+  statusOptions: ['pending', 'interview', 'declined'],
+  status: 'pending',
+  jobLocation: userLocation || '',
+  // New added key value for jobs
+  jobs: [],
+  totalJobs: 0,
+  numOfPages: 1,
+  page: 1,
+};
+
+const AppProvider = ({ children }) => {
+  // some code...
+
+  const getJobs = async () => {
+    const url = `/jobs`;
+    dispatch({ type: GET_JOBS_BEGIN });
+    try {
+      const { data } = await authFetch.get(url);
+      const { jobs, totalJobs, numOfPages } = data;
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages,
+        },
+      });
+    } catch (error) {
+      console.log(error.response);
+      logoutUser();
+    }
+    clearAlert();
+  };
+  // Temporary thing to get allJobs data
+  useEffect(() => {
+    getJobs();
+  }, []);
+
+  return (
+    <AppContext.Provider
+      value={{
+        ...state,
+        // some code...
+        getJobs,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+###### Root/client/src/context/reducer.js
+
+```js
+import {
+  // SOME CODE...
+  GET_JOBS_BEGIN,
+  GET_JOBS_SUCCESS,
+} from './actions';
+
+// SOME CODE ...
+
+if (action.type === GET_JOBS_BEGIN) {
+  return {
+    ...state,
+    isLoading: true,
+    showAlert: false,
+  };
+}
+
+if (action.type === GET_JOBS_SUCCESS) {
+  return {
+    ...state,
+    isLoading: false,
+    jobs: action.payload.jobs,
+    totalJobs: action.payload.totalJobs,
+    numOfPages: action.payload.numOfPages,
+  };
+}
+// SOME CODE ...
+```
+
+---
+
+</details>

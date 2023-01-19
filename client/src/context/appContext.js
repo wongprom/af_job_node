@@ -1,4 +1,4 @@
-import { useReducer, useContext, createContext } from 'react';
+import { useReducer, useContext, createContext, useEffect } from 'react';
 import axios from 'axios';
 import reducer from './reducer';
 import {
@@ -20,6 +20,8 @@ import {
   CREATE_JOB_BEGIN,
   CREATE_JOB_SUCCESS,
   CREATE_JOB_ERROR,
+  GET_JOBS_BEGIN,
+  GET_JOBS_SUCCESS,
 } from './actions';
 const AppContext = createContext();
 
@@ -45,6 +47,10 @@ export const initialState = {
   statusOptions: ['pending', 'interview', 'declined'],
   status: 'pending',
   jobLocation: userLocation || '',
+  jobs: [],
+  totalJobs: 0,
+  numOfPages: 1,
+  page: 1,
 };
 
 const AppProvider = ({ children }) => {
@@ -219,6 +225,30 @@ const AppProvider = ({ children }) => {
     clearAlert();
   };
 
+  const getJobs = async () => {
+    const url = `/jobs`;
+    dispatch({ type: GET_JOBS_BEGIN });
+    try {
+      const { data } = await authFetch.get(url);
+      const { jobs, totalJobs, numOfPages } = data;
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages,
+        },
+      });
+    } catch (error) {
+      console.log(error.response);
+      logoutUser();
+    }
+    clearAlert();
+  };
+  useEffect(() => {
+    getJobs();
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -232,6 +262,7 @@ const AppProvider = ({ children }) => {
         handleChange,
         clearValues,
         createJob,
+        getJobs,
       }}
     >
       {children}
