@@ -5126,7 +5126,7 @@ export default AddJob;
 
 </details>
 
-## Edit, delete job - sever
+## Edit, delete job - server
 
 <details>
   <summary>Edit Job Controller to save edited job</summary><br>
@@ -5257,6 +5257,32 @@ const updateJob = async (req, res) => {
 };
 
 export { updateJob };
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Delete job</summary><br>
+
+###### Root/controllers/jobsController.js
+
+```js
+const deleteJob = async (req, res) => {
+  const { id: jobId } = req.params;
+
+  const job = await Job.findOne({ _id: jobId });
+
+  if (!job) {
+    throw new NotFoundError(`No job with id : ${jobId}`);
+  }
+
+  checkPermissions(req.user, job.createdBy);
+
+  await job.remove();
+  res.status(StatusCodes.OK).json({ msg: 'Success! Job removed' });
+};
 ```
 
 ---
