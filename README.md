@@ -4958,3 +4958,170 @@ export { AppProvider };
 ---
 
 </details>
+
+<details>
+  <summary>Setup func setEditJob before edit a specific job</summary><br>
+
+Create new action, SET_EDIT_JOB
+
+###### Root/client/src/context/actions.js
+
+```js
+export const SET_EDIT_JOB = 'SET_EDIT_JOB';
+```
+
+Setup in appContext
+
+###### Root/client/src/context/appContext.js
+
+```js
+// some code..
+import {
+  // some code..
+  SET_EDIT_JOB,
+} from './actions';
+
+// some code..
+
+const AppProvider = ({ children }) => {
+  // some code..
+  const setEditJob = (id) => {
+    dispatch({ type: SET_EDIT_JOB, payload: { id } });
+  };
+  // some code..
+
+  return (
+    <AppContext.Provider
+      value={{
+        // some code...
+        setEditJob,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+Setup functionality in reducer
+
+###### Root/client/src/context/reducer.js
+
+```js
+import { initialState } from './appContext';
+import {
+  //some code..
+  SET_EDIT_JOB,
+} from './actions';
+
+const reducer = (state, action) => {
+  // some code...
+
+  if (action.type === SET_EDIT_JOB) {
+    const job = state.jobs.find((job) => job._id === action.payload.id);
+    const { _id, position, company, jobLocation, jobType, status } = job;
+
+    return {
+      ...state,
+      isEditing: true,
+      editJobId: _id,
+      position,
+      company,
+      jobLocation,
+      jobType,
+      status,
+    };
+  }
+
+  throw new Error(`no such action :${action.type}`);
+};
+export default reducer;
+```
+
+Make some changes in AddJob
+
+###### Root/client/src/pages/dashboard/AddJob.js
+
+```js
+import { FormRow, Alert, FormRowSelect } from '../../components';
+import { useAppContext } from '../../context/appContext';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+
+const AddJob = () => {
+  const {
+    isLoading,
+    isEditing,
+    showAlert,
+    displayAlert,
+    position,
+    company,
+    jobLocation,
+    jobType,
+    jobTypeOptions,
+    status,
+    statusOptions,
+    handleChange,
+    clearValues,
+    createJob,
+    editJob,
+  } = useAppContext();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // toggle if check for testing
+    if (!position || !company || !jobLocation) {
+      displayAlert();
+      return;
+    }
+    if (isEditing) {
+      // is now true, after action SET_EDIT_JOB
+      editJob(); // console.log gives "edit Job" for now
+      return;
+    }
+    createJob();
+    console.log('create job');
+  };
+
+  return (
+    <Wrapper>
+      <form className="form">
+        <h3>{isEditing ? 'edit job' : 'add job'} </h3>
+        {showAlert && <Alert />}
+        <div className="form-center">
+          {/* some code ...*/}
+          <div className="btn-container">
+            <button
+              className="btn btn-block submit-btn"
+              type="submit"
+              onClick={handleSubmit}
+              disabled={isLoading}
+            >
+              submit
+            </button>
+            <button
+              className="btn btn-block clear-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                clearValues();
+              }}
+            >
+              clear
+            </button>
+          </div>
+        </div>
+      </form>
+    </Wrapper>
+  );
+};
+
+export default AddJob;
+```
+
+---
+
+</details>
