@@ -4829,3 +4829,132 @@ export default Job;
 ---
 
 </details>
+
+<details>
+  <summary>Add some more styling to AllJobs page and sub components</summary><br>
+
+Add some more styling to JobInfo
+
+###### Root/client/src/components/JobInfo.js
+
+```js
+import Wrapper from '../assets/wrappers/JobInfo';
+
+const JobInfo = ({ icon, text }) => {
+  return (
+    <Wrapper>
+      <span className="icon">{icon}</span>
+      <span className="text">{text}</span>
+    </Wrapper>
+  );
+};
+
+export default JobInfo;
+```
+
+Add some more styling to Job and basic func setEditJob, deleteJob
+
+###### Root/client/src/components/Job.js
+
+```js
+import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { FaLocationArrow, FaBriefcase, FaCalendarAlt } from 'react-icons/fa';
+import { useAppContext } from '../context/appContext';
+import Wrapper from '../assets/wrappers/Job';
+import JobInfo from './JobInfo';
+
+const Job = ({
+  position,
+  _id,
+  status,
+  jobType,
+  jobLocation,
+  createdBy,
+  company,
+  createdAt,
+}) => {
+  const { setEditJob, deleteJob } = useAppContext();
+  let date = moment(createdAt);
+  date = date.format('DD/MM/YYYY');
+  return (
+    <Wrapper>
+      <header>
+        <div className="main-icon">{company.charAt(0)}</div>
+        <div className="info">
+          <h5>{position}</h5>
+          <p>{company}</p>
+        </div>
+      </header>
+      <div className="content">
+        <div className="content-center">
+          <JobInfo icon={<FaLocationArrow />} text={jobLocation} />
+          <JobInfo icon={<FaCalendarAlt />} text={date} />
+          <JobInfo icon={<FaBriefcase />} text={jobType} />
+          <div className={`status ${status}`}>{status}</div>
+        </div>
+        <footer>
+          <div className="actions">
+            <Link
+              to="/add-job"
+              onClick={() => setEditJob(_id)}
+              className="btn edit-btn"
+            >
+              Edit
+            </Link>
+            <button
+              type="button"
+              className="btn delete-btn"
+              onClick={() => deleteJob(_id)}
+            >
+              Delete
+            </button>
+          </div>
+        </footer>
+      </div>
+    </Wrapper>
+  );
+};
+export default Job;
+```
+
+Add func setEditJob, deleteJob
+
+###### Root/client/src/context/appContext.js
+
+```js
+// some code...
+
+const AppProvider = ({ children }) => {
+  // some code...
+
+  const setEditJob = (id) => {
+    console.log(`set edit job : ${id}`);
+  };
+  const deleteJob = (id) => {
+    console.log(`delete : ${id}`);
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        // Some code
+        setEditJob,
+        deleteJob,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+---
+
+</details>
