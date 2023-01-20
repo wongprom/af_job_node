@@ -5168,3 +5168,39 @@ export { updateJob };
 ```
 
 ---
+
+</details>
+
+<details>
+  <summary>Alternative approach, save edited job to database</summary><br>
+
+###### Root/controllers/jobsController.js
+
+```js
+const updateJob = async (req, res) => {
+  const { id: jobId } = req.params;
+  const { company, position, jobLocation } = req.body;
+
+  if (!position || !company) {
+    throw new BadRequestError('Please provide all values');
+  }
+  const job = await Job.findOne({ _id: jobId });
+
+  if (!job) {
+    throw new NotFoundError(`No job with id :${jobId}`);
+  }
+
+  // alternative approach
+
+  job.position = position;
+  job.company = company;
+  job.jobLocation = jobLocation;
+
+  await job.save();
+  res.status(StatusCodes.OK).json({ job });
+};
+```
+
+---
+
+</details>
