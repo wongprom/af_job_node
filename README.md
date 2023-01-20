@@ -5204,3 +5204,61 @@ const updateJob = async (req, res) => {
 ---
 
 </details>
+
+<details>
+  <summary>Check permission before edit a job</summary><br>
+
+You should only have permission to edit jobs you have created. Create checkPermissions function
+
+###### Root/utils/checkPermissions.js
+
+```js
+import { UnAuthenticatedError } from '../errors/index.js';
+
+const checkPermissions = (requestUser, resourceUserId) => {
+  if (requestUser.userId === resourceUserId.toString()) return;
+  throw new UnAuthenticatedError('Not authorized to access this route');
+};
+
+export default checkPermissions;
+```
+
+Import checkPermissions to jobsController, pass 2 arguments
+
+###### Root/controllers/jobsController.js
+
+```js
+// some imports...
+import checkPermissions from '../utils/checkPermissions.js';
+// some code...
+
+const updateJob = async (req, res) => {
+  const { id: jobId } = req.params;
+  const { company, position } = req.body;
+
+  if (!company || !position) {
+    throw new BadRequestError('Please provide all values');
+  }
+
+  const job = await Job.findOne({ _id: jobId });
+
+  if (!job) {
+    throw new NotFoundError(`No job with id: ${jobId}`);
+  }
+  // check permission
+  checkPermissions(req.user, job.createdBy);
+
+  const updatedJob = await Job.findOneAndUpdate({ _id: jobId }, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(StatusCodes.OK).json({ updatedJob });
+};
+
+export { updateJob };
+```
+
+---
+
+</details>
