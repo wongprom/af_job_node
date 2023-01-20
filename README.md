@@ -5125,3 +5125,46 @@ export default AddJob;
 ---
 
 </details>
+
+## Edit, delete job - sever
+
+<details>
+  <summary>Edit Job Controller to save edited job</summary><br>
+
+Add functionality to updateJob, make tests with Postman
+
+###### Root/controllers/jobsController.js
+
+```js
+import Job from '../models/Job.js';
+import { StatusCodes } from 'http-status-codes';
+import { BadRequestError, NotFoundError } from '../errors/index.js';
+
+const updateJob = async (req, res) => {
+  // give alias to id
+  const { id: jobId } = req.params;
+  const { company, position } = req.body;
+
+  if (!company || !position) {
+    throw new BadRequestError('Please provide all values');
+  }
+
+  //  find _id that matches jobId
+  const job = await Job.findOne({ _id: jobId });
+
+  if (!job) {
+    throw new NotFoundError(`No job with id: ${jobId}`);
+  }
+
+  const updatedJob = await Job.findOneAndUpdate({ _id: jobId }, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(StatusCodes.OK).json({ updatedJob });
+};
+
+export { updateJob };
+```
+
+---
