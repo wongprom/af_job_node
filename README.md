@@ -5803,7 +5803,7 @@ import { useAppContext } from '../../context/appContext';
 import { StatsContainer, Loading, ChartsContainer } from '../../components';
 
 const Stats = () => {
-  const { showStats, isLoading, monthlyApplications } = useAppContext();
+  const { showStats, isLoading } = useAppContext();
   useEffect(() => {
     showStats();
   }, []);
@@ -5815,11 +5815,84 @@ const Stats = () => {
   return (
     <>
       <StatsContainer />
-      {monthlyApplications.length > 0 && <ChartsContainer />}
+      <ChartsContainer />
     </>
   );
 };
 export default Stats;
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Display aggregation stats with Styled-Components dynamic colors </summary><br>
+
+###### Root/client/src/components/StatsContainer.js
+
+```js
+import { useAppContext } from '../context/appContext';
+
+import { FaSuitcaseRolling, FaCalendarCheck, FaBug } from 'react-icons/fa';
+import Wrapper from '../assets/wrappers/StatsContainer';
+
+import StatsItem from './StatsItem';
+
+const StatsContainer = () => {
+  const { stats } = useAppContext();
+
+  const defaultStats = [
+    {
+      title: 'pending applications',
+      count: stats.pending || 0,
+      icon: <FaSuitcaseRolling />,
+      color: '#e9b949',
+      bcg: '#fcefc7',
+    },
+    {
+      title: 'interviews scheduled',
+      count: stats.interview || 0,
+      icon: <FaCalendarCheck />,
+      color: '#647acb',
+      bcg: '#e0e8f9',
+    },
+    {
+      title: 'jobs declined',
+      count: stats.declined || 0,
+      icon: <FaBug />,
+      color: '#d66a6a',
+      bcg: '#ffeeee',
+    },
+  ];
+  return (
+    <Wrapper>
+      {defaultStats.map((item, index) => {
+        return <StatsItem key={index} {...item} />;
+      })}
+    </Wrapper>
+  );
+};
+export default StatsContainer;
+```
+
+###### Root/client/src/components/StatsItem.js
+
+```js
+import Wrapper from '../assets/wrappers/StatItem';
+
+const StatsItem = ({ count, title, icon, color, bcg }) => {
+  return (
+    <Wrapper color={color} bcg={bcg}>
+      <header>
+        <span className="count">{count}</span>
+        <div className="icon">{icon}</div>
+      </header>
+      <h5 className="title">{title}</h5>
+    </Wrapper>
+  );
+};
+export default StatsItem;
 ```
 
 ---
