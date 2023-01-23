@@ -5288,3 +5288,90 @@ const deleteJob = async (req, res) => {
 ---
 
 </details>
+
+## Edit, delete job - Frontend
+
+<details>
+  <summary>Delete job request</summary><br>
+
+Create DELETE_JOB_BEGIN action and impl
+
+###### Root/client/src/context/actions.js
+
+```js
+export const DELETE_JOB_BEGIN = 'DELETE_JOB_BEGIN';
+```
+
+###### Root/client/src/context/appContext.js
+
+```js
+import { useReducer, useContext, createContext, useEffect } from 'react';
+import axios from 'axios';
+import reducer from './reducer';
+import {
+  // some code
+  DELETE_JOB_BEGIN,
+} from './actions';
+
+// some code...
+
+const AppProvider = ({ children }) => {
+  // some code...
+
+  const deleteJob = async (jobId) => {
+    dispatch({ type: DELETE_JOB_BEGIN });
+
+    try {
+      await authFetch.delete(`/jobs/${jobId}`);
+      getJobs();
+    } catch (error) {
+      logoutUser();
+    }
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        // some code...
+        deleteJob,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+###### Root/client/src/context/reducer.js
+
+```js
+import { initialState } from './appContext';
+import {
+  // some code...
+  DELETE_JOB_BEGIN,
+} from './actions';
+
+const reducer = (state, action) => {
+  // some code ...
+
+  if (action.type === DELETE_JOB_BEGIN) {
+    return {
+      ...state,
+      isLoading: true,
+    };
+  }
+
+  throw new Error(`no such action :${action.type}`);
+};
+export default reducer;
+```
+
+---
+
+</details>

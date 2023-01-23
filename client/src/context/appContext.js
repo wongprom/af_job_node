@@ -23,6 +23,7 @@ import {
   GET_JOBS_BEGIN,
   GET_JOBS_SUCCESS,
   SET_EDIT_JOB,
+  DELETE_JOB_BEGIN,
 } from './actions';
 const AppContext = createContext();
 
@@ -259,8 +260,20 @@ const AppProvider = ({ children }) => {
     console.log('edit job');
   };
 
-  const deleteJob = (id) => {
-    console.log(`delete : ${id}`);
+  const deleteJob = async (jobId) => {
+    dispatch({ type: DELETE_JOB_BEGIN });
+
+    try {
+      await authFetch.delete(`/jobs/${jobId}`);
+      getJobs();
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: appContext.js:270 ~ deleteJob ~ error',
+        error.response
+      );
+      // toggle logoutUser for testing
+      // logoutUser()
+    }
   };
 
   return (
