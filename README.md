@@ -5898,3 +5898,90 @@ export default StatsItem;
 ---
 
 </details>
+
+## Show Charts - Aggregation
+
+<details>
+  <summary>Use aggregation in jobsController for chart (monthlyApplications)</summary><br>
+
+![image](/images/readme/chart.png)
+
+Setup showStats function for chart
+
+###### Root/controllers/jobsController.js
+
+```js
+import mongoose from 'mongoose';
+// some imports
+
+const showStats = async (req, res) => {
+  let stats = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+  // Gives this structure now 👇
+  // {
+  //   stats: [
+  //     {
+  //       _id: "pending",
+  //       count: 24
+  //     },
+  //     {
+  //       _id: "declined",
+  //       count: 12
+  //     },
+  //     {
+  //       _id: "interview",
+  //       count: 12
+  //     },
+  //   ]
+  // }
+
+  stats = stats.reduce((acc, curr) => {
+    const { _id: title, count } = curr;
+    acc[title] = count;
+    return acc;
+  }, {});
+  // Gives this structure after reduce 👇
+  // {
+  //  "defaultStats": {
+  //       "pending": 24,
+  //       "declined": 12
+  //       "interview": 12,
+  //   },
+  // }
+
+  const defaultStats = {
+    pending: stats.pending || 0,
+    interview: stats.interview || 0,
+    declined: stats.declined || 0,
+  };
+
+  let monthlyApplications = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    {
+      $group: {
+        _id: {
+          year: {
+            $year: '$createdAt',
+          },
+          month: {
+            $month: '$createdAt',
+          },
+        },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { '_id.year': -1, '_id.month': -1 } },
+    { $limit: 12 },
+  ]);
+
+  res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
+};
+
+export { showStats };
+```
+
+---
+
+</details>
