@@ -5732,3 +5732,96 @@ export default reducer;
 ---
 
 </details>
+
+<details>
+  <summary>Setup basic structure for Stats Page</summary><br>
+
+New ChartsContainer component
+
+###### Root/client/src/components/ChartsContainer.js
+
+```js
+const ChartsContainer = () => {
+  return <div>ChartsContainer</div>;
+};
+export default ChartsContainer;
+```
+
+New StatsItem component
+
+###### Root/client/src/components/StatsItem.js
+
+```js
+const StatsItem = () => {
+  return <div>StatsItem</div>;
+};
+export default StatsItem;
+```
+
+New StatsContainer component
+
+###### Root/client/src/components/StatsContainer.js
+
+```js
+import StatsItem from './StatsItem';
+
+const StatsContainer = () => {
+  return (
+    <div>
+      <h1>StatsContainer</h1>
+      <StatsItem />
+    </div>
+  );
+};
+export default StatsContainer;
+```
+
+Import/export from index.
+
+###### Root/client/src/components/index.js
+
+```js
+// some imports...
+import ChartsContainer from './ChartsContainer';
+import StatsContainer from './StatsContainer';
+
+export {
+  // some exports...
+
+  StatsContainer,
+  ChartsContainer,
+};
+```
+
+Update Stats Page
+
+###### Root/client/src/pages/dashboard/Stats.js
+
+```js
+import { useEffect } from 'react';
+import { useAppContext } from '../../context/appContext';
+import { StatsContainer, Loading, ChartsContainer } from '../../components';
+
+const Stats = () => {
+  const { showStats, isLoading, monthlyApplications } = useAppContext();
+  useEffect(() => {
+    showStats();
+  }, []);
+
+  if (isLoading) {
+    <Loading center />;
+  }
+
+  return (
+    <>
+      <StatsContainer />
+      {monthlyApplications.length > 0 && <ChartsContainer />}
+    </>
+  );
+};
+export default Stats;
+```
+
+---
+
+</details>
