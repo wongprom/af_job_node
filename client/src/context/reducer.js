@@ -238,6 +238,9 @@ const reducer = (state, action) => {
     };
   }
 
+  if (action.type === EDIT_JOB_BEGIN) {
+    return { ...state, isLoading: true };
+  }
   if (action.type === EDIT_JOB_SUCCESS) {
     return {
       ...state,
@@ -247,7 +250,7 @@ const reducer = (state, action) => {
       alertText: 'Job updated!',
     };
   }
-  if (action.type === EDIT_JOB_BEGIN) {
+  if (action.type === EDIT_JOB_ERROR) {
     return {
       ...state,
       isLoading: false,
