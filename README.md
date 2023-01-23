@@ -5630,3 +5630,105 @@ export { showStats };
 ---
 
 </details>
+
+## Stats - Frontend
+
+<details>
+  <summary>Get stats data with new action SHOW_STATS...</summary><br>
+
+###### Root/client/src/context/actions.js
+
+```js
+export const SHOW_STATS_BEGIN = 'SHOW_STATS_BEGIN';
+export const SHOW_STATS_SUCCESS = 'SHOW_STATS_SUCCESS';
+```
+
+###### Root/client/src/context/appContext.js
+
+```js
+//some imports..
+import {
+  // some code...
+  SHOW_STATS_BEGIN,
+  SHOW_STATS_SUCCESS,
+} from './actions';
+
+export const initialState = {
+  // some code
+  stats: {},
+};
+
+const AppProvider = ({ children }) => {
+  // some code..
+
+  const showStats = async () => {
+    dispatch({ type: SHOW_STATS_BEGIN });
+    try {
+      const { data } = await authFetch.get(`/jobs/stats`);
+      dispatch({
+        type: SHOW_STATS_SUCCESS,
+        payload: {
+          stats: data.defaultStats,
+        },
+      });
+    } catch (error) {
+      //toggle func logoutUser for testing
+      // logoutUser()
+    }
+    clearAlert();
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        // some code...
+        showStats,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+// make sure use
+export const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+export { AppProvider };
+```
+
+###### Root/client/src/context/reducer.js
+
+```js
+import { initialState } from './appContext';
+import {
+  // some imports...
+  SHOW_STATS_BEGIN,
+  SHOW_STATS_SUCCESS,
+} from './actions';
+
+const reducer = (state, action) => {
+  if (action.type === SHOW_STATS_BEGIN) {
+    return {
+      ...state,
+      isLoading: true,
+      showAlert: false,
+    };
+  }
+
+  if (action.type === SHOW_STATS_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      stats: action.payload.stats,
+    };
+  }
+
+  throw new Error(`no such action :${action.type}`);
+};
+export default reducer;
+```
+
+---
+
+</details>
