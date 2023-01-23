@@ -5484,3 +5484,81 @@ export { AppProvider };
 ```
 
 ---
+
+</details>
+
+## Populate Database With Fake Jobs, Mockaroo
+
+<details>
+  <summary>Use Mockaroo to create fake jobs</summary><br>
+
+[Mockaroo](https://www.mockaroo.com/)
+
+Use exact same fields names as in your Job.js
+![image](/images/readme/mockaroo.png)
+
+Schema structure Job.js
+![image](/images/readme/jobJs.png)
+
+How to get CreatedBy field value from postman ?
+
+- Login a user and copy `_id` value.
+  ![image](/images/readme/postman-createdBy.png)
+
+Make some changes before download .json
+
+- Rows = amount of jobs will be created.
+- We want to have json data.
+- we don't want null values
+- DOWNLOAD DATA
+  ![image](/images/readme/mockaroo-changes.png)
+
+- I have changed file name to `mock-data`
+- Add `mock-data.json` file to ROOT
+  ![image](/images/readme/add-mock-data.png)
+
+Create new file populate.js to run from terminal
+
+###### Root/populate.js
+
+```js
+import { readFile } from 'fs/promises';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+import connectDB from './db/connect.js';
+import Job from './models/Job.js';
+
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URL); //mongodb+srv://...something@....mongodb.net/?retryWrites=true&w=majority
+    await Job.deleteMany();
+
+    const jsonProducts = JSON.parse(
+      await readFile(new URL('./mock-data.json', import.meta.url))
+    );
+    await Job.create(jsonProducts);
+    console.log('Success!!!!');
+    process.exit(0);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
+
+start();
+```
+
+From ROOT, run populate file in terminal
+
+```
+node populate
+```
+
+- We have added 100 fake jobs to db!
+  ![image](/images/readme/db.png)
+
+---
+
+</details>
