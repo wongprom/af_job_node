@@ -6199,6 +6199,7 @@ export default AreaChartComponent;
   <summary>Query params - status</summary><br>
 
 Make changes in the function getAllJobs
+
 ###### Root/controllers/jobsController.js
 
 ```js
@@ -6231,11 +6232,38 @@ const getAllJobs = async (req, res) => {
 <details>
   <summary>Query params - jobType</summary><br>
 
-Make changes in the function
-###### Root/
+`{{URL}}/jobs?status=interview&jobType=full-time` results in jobs with status interview and jobType is full-time will be sent
+![image](/images/readme/postman-flter-server.png)
+Make changes in the func getAllJobs
+
+###### Root/controllers/jobsController.js
 
 ```js
+const getAllJobs = async (req, res) => {
+  const { status, jobType, sort, search } = req.query;
 
+  const queryObject = {
+    createdBy: req.user.userId,
+  };
+
+  if (status !== 'all') {
+    queryObject.status = status;
+  }
+
+  // add this  if check 👇
+  if (jobType !== 'all') {
+    queryObject.jobType = jobType;
+  }
+
+  // NO await
+  let result = Job.find(queryObject);
+  // Chain sort condition
+  const jobs = await result;
+
+  res
+    .status(StatusCodes.OK)
+    .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
 ```
 
 ---
