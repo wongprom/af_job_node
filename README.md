@@ -6311,3 +6311,60 @@ const getAllJobs = async (req, res) => {
 ---
 
 </details>
+<details>
+  <summary>Query params - sort</summary><br>
+
+`{{URL}}/jobs?status=all&jobType=all&sort=latest`
+
+Make changes in the func getAllJobs
+
+###### Root/controllers/jobsController.js
+
+```js
+const getAllJobs = async (req, res) => {
+  const { status, jobType, sort, search } = req.query;
+
+  const queryObject = {
+    createdBy: req.user.userId,
+  };
+
+  if (status !== 'all') {
+    queryObject.status = status;
+  }
+
+  if (jobType !== 'all') {
+    queryObject.jobType = jobType;
+  }
+
+  if (search) {
+    queryObject.position = { $regex: search, $options: 'i' };
+  }
+
+  // add these  if checks 👇
+  if (sort === 'latest') {
+    result = result.sort('-createdAt');
+  }
+  if (sort === 'oldest') {
+    result = result.sort('createdAt');
+  }
+  if (sort === 'a-z') {
+    result = result.sort('position');
+  }
+  if (sort === 'z-a') {
+    result = result.sort('-position');
+  }
+
+  // NO await
+  let result = Job.find(queryObject);
+  // Chain sort condition
+  const jobs = await result;
+
+  res
+    .status(StatusCodes.OK)
+    .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
+
+---
+
+</details>
