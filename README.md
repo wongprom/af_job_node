@@ -6531,3 +6531,65 @@ if (action.type === CLEAR_FILTERS) {
 ---
 
 </details>
+
+<details>
+  <summary>Get jobs request</summary><br>
+Set up query to send server when changes are made in the form. Trigger function when changes are made in the global state
+
+###### Root/client/src/context/appContext.js
+
+```js
+const getJobs = async () => {
+  const { search, searchStatus, searchType, sort } = state; // <--
+
+  //update and new url and search 👇
+  let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+  if (search) {
+    url = url + `&search=${search}`;
+  }
+
+  dispatch({ type: GET_JOBS_BEGIN });
+  try {
+    const { data } = await authFetch.get(url);
+    const { jobs, totalJobs, numOfPages } = data;
+    dispatch({
+      type: GET_JOBS_SUCCESS,
+      payload: {
+        jobs,
+        totalJobs,
+        numOfPages,
+      },
+    });
+  } catch (error) {
+    console.log(error.response);
+    // Toggle logout() for testing
+    // logoutUser();
+  }
+  clearAlert();
+};
+```
+
+Add import from `search, searchStatus, searchType, sort` useAppContext and add them as dependency in the useEffect to trigger on change.
+
+###### Root/client/src/components/JobsContainer.js
+
+```js
+const {
+  getJobs,
+  jobs,
+  isLoading,
+  page,
+  totalJobs,
+  search,
+  searchStatus,
+  searchType,
+  sort,
+} = useAppContext();
+useEffect(() => {
+  getJobs();
+}, [search, searchStatus, searchType, sort]);
+```
+
+---
+
+</details>
