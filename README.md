@@ -6486,3 +6486,48 @@ const clearFilters = () => {
 ---
 
 </details>
+
+<details>
+  <summary>Complete clearFilters func with new action-</summary><br>
+
+Create CLEAR_FILTERS action
+
+###### Root/client/src/context/actions.js
+
+```js
+export const CLEAR_FILTERS = 'CLEAR_FILTERS';
+```
+
+import CLEAR_FILTERS in appContext
+
+###### Root/client/src/context/appContext.js
+
+```js
+import { CLEAR_FILTERS } from './actions';
+```
+
+import CLEAR_FILTERS in reducer
+
+###### Root/client/src/context/reducer.js
+
+```js
+import { CLEAR_FILTERS } from './actions';
+```
+
+return default values
+
+```js
+if (action.type === CLEAR_FILTERS) {
+  return {
+    ...state,
+    search: '',
+    searchStatus: 'all',
+    searchType: 'all',
+    sort: 'latest',
+  };
+}
+```
+
+---
+
+</details>

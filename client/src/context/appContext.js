@@ -29,6 +29,7 @@ import {
   EDIT_JOB_ERROR,
   SHOW_STATS_BEGIN,
   SHOW_STATS_SUCCESS,
+  CLEAR_FILTERS,
 } from './actions';
 const AppContext = createContext();
 
@@ -328,7 +329,7 @@ const AppProvider = ({ children }) => {
     clearAlert();
   };
   const clearFilters = () => {
-    console.log('CLEAR FILTERs FUNC');
+    dispatch({ type: CLEAR_FILTERS });
   };
 
   return (
