@@ -6269,3 +6269,45 @@ const getAllJobs = async (req, res) => {
 ---
 
 </details>
+<details>
+  <summary>Query params - search</summary><br>
+
+Make changes in the func getAllJobs
+
+###### Root/controllers/jobsController.js
+
+```js
+const getAllJobs = async (req, res) => {
+  const { status, jobType, sort, search } = req.query;
+
+  const queryObject = {
+    createdBy: req.user.userId,
+  };
+
+  if (status !== 'all') {
+    queryObject.status = status;
+  }
+
+  if (jobType !== 'all') {
+    queryObject.jobType = jobType;
+  }
+
+  // add this  if check 👇
+  if (search) {
+    queryObject.position = { $regex: search, $options: 'i' };
+  }
+
+  // NO await
+  let result = Job.find(queryObject);
+  // Chain sort condition
+  const jobs = await result;
+
+  res
+    .status(StatusCodes.OK)
+    .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
+
+---
+
+</details>
