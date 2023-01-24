@@ -5566,7 +5566,7 @@ node populate
 ## Show Stats - Aggregation
 
 <details>
-  <summary>Use aggregation in jobsController</summary><br>
+  <summary>Use aggregation in jobsController for stats data</summary><br>
 
 ![image](/images/readme/aggregate.png)
 
@@ -5899,7 +5899,7 @@ export default StatsItem;
 
 </details>
 
-## Show Charts - Aggregation
+## Show Charts - Aggregation - Server
 
 <details>
   <summary>Use aggregation in jobsController for chart (monthlyApplications)</summary><br>
@@ -6048,6 +6048,100 @@ const showStats = async (req, res) => {
 };
 
 export { createJob, deleteJob, getAllJobs, updateJob, showStats };
+```
+
+---
+
+</details>
+
+## Monthly Application with charts - frontend
+
+<details>
+  <summary>Display chart with package recharts and new components</summary><br>
+
+![image](/images/readme/barChart.png)
+
+[Recharts](https://recharts.org)
+
+```
+npm install recharts
+```
+
+New component AreaChart
+
+###### Root/client/src/components/AreaChart.js
+
+```js
+const AreaChart = () => {
+  return <div>AreaChart</div>;
+};
+export default AreaChart;
+```
+
+New component BarChart
+
+###### Root/client/src/components/BarChart.js
+
+```js
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
+
+const BarChartComponent = ({ data }) => {
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart
+        data={data}
+        margin={{
+          top: 50,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis allowDecimals={false} />
+        <Tooltip />
+        <Bar dataKey="count" fill="#2cb1bc" barSize={75} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+};
+
+export default BarChartComponent;
+```
+
+Update component ChartsContainer
+
+###### Root/client/src/components/ChartsContainer.js
+
+```js
+import React, { useState } from 'react';
+
+import BarChart from './BarChart';
+import AreaChart from './AreaChart';
+import { useAppContext } from '../context/appContext';
+import Wrapper from '../assets/wrappers/ChartsContainer';
+
+export default function ChartsContainer() {
+  const [barChart, setBarChart] = useState(true);
+  const { monthlyApplications: data } = useAppContext();
+
+  return (
+    <Wrapper>
+      <h4>Monthly Applications</h4>
+
+      <button type="button" onClick={() => setBarChart(!barChart)}>
+        {barChart ? 'AreaChart' : 'BarChart'}
+      </button>
+      {barChart ? <BarChart data={data} /> : <AreaChart data={data} />}
+    </Wrapper>
+  );
+}
 ```
 
 ---
