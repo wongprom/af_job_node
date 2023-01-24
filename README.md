@@ -6192,3 +6192,52 @@ export default AreaChartComponent;
 ---
 
 </details>
+
+## Filter and sort - server
+
+<details>
+  <summary>Query params - status</summary><br>
+
+Make changes in the function getAllJobs
+###### Root/controllers/jobsController.js
+
+```js
+const getAllJobs = async (req, res) => {
+  const { status, jobType, sort, search } = req.query;
+
+  const queryObject = {
+    createdBy: req.user.userId,
+  };
+
+  if (status !== 'all') {
+    queryObject.status = status;
+  }
+
+  // NO await
+  let result = Job.find(queryObject);
+  // Chain sort condition
+  const jobs = await result;
+
+  res
+    .status(StatusCodes.OK)
+    .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Query params - jobType</summary><br>
+
+Make changes in the function
+###### Root/
+
+```js
+
+```
+
+---
+
+</details>
