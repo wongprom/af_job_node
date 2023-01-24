@@ -6057,7 +6057,7 @@ export { createJob, deleteJob, getAllJobs, updateJob, showStats };
 ## Monthly Application with charts - frontend
 
 <details>
-  <summary>Display chart with package recharts and new components</summary><br>
+  <summary>Display bar chart with package recharts and new components</summary><br>
 
 ![image](/images/readme/barChart.png)
 
@@ -6142,6 +6142,51 @@ export default function ChartsContainer() {
     </Wrapper>
   );
 }
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Display Area chart</summary><br>
+
+Update AreaChart.
+⚠️ Make sure that your component does not have the same name as the imports from recharts
+
+###### Root/client/src/components/AreaChart.js
+
+```js
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from 'recharts';
+
+const AreaChartComponent = ({ data }) => {
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <AreaChart
+        data={data}
+        margin={{
+          top: 50,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis allowDecimals={false} />
+        <Tooltip />
+        <Area type="monotone" dataKey="count" stroke="#2cb1bc" fill="#bef8fd" />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+};
+
+export default AreaChartComponent;
 ```
 
 ---
