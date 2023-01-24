@@ -5985,3 +5985,71 @@ export { showStats };
 ---
 
 </details>
+
+<details>
+  <summary>Refactor aggregated data for charts and implement moment</summary><br>
+
+[https://momentjs.com/](https://momentjs.com/)
+
+```
+npm install moment
+```
+
+###### Root/controllers/jobsController.js
+
+```js
+// some imports
+import moment from 'moment';
+
+// some code ...
+
+const showStats = async (req, res) => {
+  let stats = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+
+  let monthlyApplications = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    {
+      $group: {
+        _id: {
+          year: {
+            $year: '$createdAt',
+          },
+          month: {
+            $month: '$createdAt',
+          },
+        },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { '_id.year': -1, '_id.month': -1 } },
+    { $limit: 12 },
+  ]);
+
+  // Refactor  👇
+  monthlyApplications = monthlyApplications
+    .map((item) => {
+      const {
+        _id: { year, month },
+        count,
+      } = item;
+      // accepts 0-11
+      const date = moment()
+        .month(month - 1)
+        .year(year)
+        .format('MMM Y');
+      return { date, count };
+    })
+    .reverse();
+
+  res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
+};
+
+export { createJob, deleteJob, getAllJobs, updateJob, showStats };
+```
+
+---
+
+</details>

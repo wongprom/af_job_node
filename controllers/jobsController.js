@@ -1,6 +1,7 @@
 import Job from '../models/Job.js';
 import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
+import moment from 'moment';
 import {
   BadRequestError,
   NotFoundError,
@@ -104,6 +105,21 @@ const showStats = async (req, res) => {
     { $sort: { '_id.year': -1, '_id.month': -1 } },
     { $limit: 12 },
   ]);
+
+  monthlyApplications = monthlyApplications
+    .map((item) => {
+      const {
+        _id: { year, month },
+        count,
+      } = item;
+      // accepts 0-11
+      const date = moment()
+        .month(month - 1)
+        .year(year)
+        .format('MMM Y');
+      return { date, count };
+    })
+    .reverse();
 
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 };
