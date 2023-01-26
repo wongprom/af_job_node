@@ -6806,3 +6806,38 @@ export default PageBtnContainer;
 ---
 
 </details>
+
+<details>
+  <summary>Render button with page number</summary><br>
+
+
+![image](/images/readme/paginationPageBtns.png)
+
+###### Root/client/src/components/PageBtnContainer.js
+
+```js
+const pages = Array.from({ length: numOfPages }, (_, index) => {
+  return index + 1;
+});
+
+return (
+  <div className="btn-container">
+    {pages.map((pageNumber) => {
+      return (
+        <button
+          key={pageNumber}
+          type="button"
+          className={pageNumber === page ? 'pageBtn active' : 'pageBtn'}
+          onClick={() => console.log(page)}
+        >
+          {pageNumber}
+        </button>
+      );
+    })}
+  </div>
+);
+```
+
+---
+
+</details>
