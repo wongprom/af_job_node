@@ -6716,3 +6716,47 @@ const getAllJobs = async (req, res) => {
 ---
 
 </details>
+
+## Pagination - Frontend
+
+<details>
+  <summary>Display pagination btn</summary><br>
+
+New component PageBtnContainer
+
+###### Root/client/src/components/PageBtnContainer.js
+
+```js
+const PageBtnContainer = () => {
+  return <div>PageBtnContainer</div>;
+};
+export default PageBtnContainer;
+```
+
+Import JobsContainer, numOfPages and render btn only if numbOfPage is more then 1
+
+###### Root/client/src/components/JobsContainer.js
+
+```js
+import PageBtnContainer from './PageBtnContainer';
+
+const { numOfPages } = useAppContext();
+
+return (
+  <Wrapper>
+    <h5>
+      {totalJobs} job{jobs.length > 1 && 's'} found
+    </h5>
+    <div className="jobs">
+      {jobs.map((job) => {
+        return <Job key={job._id} {...job} />;
+      })}
+    </div>
+    {numOfPages > 1 && <PageBtnContainer />}
+  </Wrapper>
+);
+```
+
+---
+
+</details>
