@@ -6950,3 +6950,59 @@ useEffect(() => {
 ---
 
 </details>
+
+## Build frontend for deployment
+
+<details>
+  <summary>Prepare frontend for deployment</summary><br>
+  [name](link)
+
+1. Add `build-client` for frontend in the package.json that is for the server
+
+###### Root/package.json 👈
+
+```js
+"scripts": {
+    "build-client": "cd client && npm run build", // <--
+    "server": "nodemon server --ignore client",
+    "client": "npm start --prefix client",
+    "start": "concurrently --kill-others-on-fail \"npm run server\" \" npm run client\""
+  },
+```
+
+2. Add imports, create variable \_\_dirname, add app.use(express.static...)
+
+###### Root/server.js
+
+```js
+import { dirname } from 'path'; // <--
+import { fileURLToPath } from 'url'; // <--
+import path from 'path'; // <--
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
+
+// only when ready to deploy
+const __dirname = dirname(fileURLToPath(import.meta.url)); // <--
+app.use(express.static(path.resolve(__dirname, './client/build'))); // <--
+
+// express.json() make json data available for us in controllers
+app.use(express.json());
+```
+
+Run the new build command
+
+```
+npm run build-client
+```
+
+run application on port 5000
+
+```
+node server
+```
+
+---
+
+⚠️ fix warning in console this https://stackoverflow.com/questions/70469717/cant-load-a-react-app-after-starting-server ⚠️
