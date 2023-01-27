@@ -6808,8 +6808,7 @@ export default PageBtnContainer;
 </details>
 
 <details>
-  <summary>Render button with page number</summary><br>
-
+  <summary>Render button with page number (without state change)</summary><br>
 
 ![image](/images/readme/paginationPageBtns.png)
 
@@ -6835,6 +6834,46 @@ return (
       );
     })}
   </div>
+);
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Render button with page number (state change with new action, works with search functionality)</summary><br>
+
+
+![image](/images/readme/paginationbtnStateChange.png)
+
+Create action CHANGE_PAGE
+
+###### Root/client/src/context/actions.js
+
+```js
+export const CHANGE_PAGE = 'CHANGE_PAGE';
+```
+
+Import CHANGE_PAGE, create function changePage, make changePage accessible through the application
+
+###### Root/client/src/context/appContext.js
+
+```js
+import { CHANGE_PAGE } from './actions';
+
+const changePage = (page) => {
+  dispatch({ type: CHANGE_PAGE, payload: { page } });
+};
+
+return (
+  <AppContext.Provider
+    value={{
+      changePage,
+    }}
+  >
+    {children}
+  </AppContext.Provider>
 );
 ```
 

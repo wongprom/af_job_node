@@ -3,7 +3,7 @@ import { useAppContext } from '../context/appContext';
 import Wrapper from '../assets/wrappers/PageBtnContainer';
 
 const PageBtnContainer = () => {
-  const { numOfPages, page } = useAppContext();
+  const { numOfPages, page, changePage } = useAppContext();
 
   const pages = Array.from({ length: numOfPages }, (_, index) => {
     return index + 1;
@@ -30,7 +30,7 @@ const PageBtnContainer = () => {
               key={pageNumber}
               type="button"
               className={pageNumber === page ? 'pageBtn active' : 'pageBtn'}
-              onClick={() => console.log(page)}
+              onClick={() => changePage(pageNumber)}
             >
               {pageNumber}
             </button>
