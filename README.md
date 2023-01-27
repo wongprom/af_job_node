@@ -7005,4 +7005,43 @@ node server
 
 ---
 
+</details>
+
+## Security packages
+
+<details>
+  <summary>Install and import security packages</summary><br>
+
+- [helmet](https://www.npmjs.com/package/helmet)
+  Helmet helps you secure your Express apps by setting various HTTP headers.
+- [xss-clean](https://www.npmjs.com/package/xss-clean)
+  Node.js Connect middleware to sanitize user input coming from POST body, GET queries, and url params.
+- [express-mongo-sanitize](https://www.npmjs.com/package/express-mongo-sanitize)
+  Sanitizes user-supplied data to prevent MongoDB Operator Injection.
+- [express-rate-limit](https://www.npmjs.com/package/express-rate-limit)
+  Basic rate-limiting middleware for Express.
+
+From ROOT...
+
+```
+npm install helmet xss-clean express-mongo-sanitize express-rate-limit
+```
+
+###### Root/server.js
+
+```js
+import helmet from 'helmet';
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
+
+app.use(express.json());
+// after this  👆
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
+```
+
+---
+
+</details>
 ⚠️ fix warning in console this https://stackoverflow.com/questions/70469717/cant-load-a-react-app-after-starting-server ⚠️
