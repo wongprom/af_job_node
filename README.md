@@ -6907,3 +6907,46 @@ const prevPage = () => {
 ---
 
 </details>
+
+<details>
+  <summary>Trig getJobs on page change </summary><br>
+
+We always want to be on first page when get all jobs
+
+###### Root/client/src/context/reducer.js
+
+```js
+if (action.type === HANDLE_CHANGE) {
+  return {
+    ...state,
+    page: 1, // <--
+    [action.payload.name]: action.payload.value,
+  };
+}
+```
+
+In func all jobs. destruct `page` from state, add `page=${page}` to query
+
+###### Root/client/src/context/appContext.js
+
+```js
+const getJobs = async () => {
+  const { page, search, searchStatus, searchType, sort } = state;
+
+  let url = `/jobs?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+};
+```
+
+Add page to other dependencies on useEffect to trigger render on page state change
+
+###### Root/client/src/components/JobsContainer.js
+
+```js
+useEffect(() => {
+  getJobs();
+}, [page, search, searchStatus, searchType, sort]);
+```
+
+---
+
+</details>
