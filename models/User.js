@@ -46,9 +46,6 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 UserSchema.pre('save', async function () {
-  console.log('this.modifiedPaths => ', this.modifiedPaths());
-  console.log('this.isModified => ', this.isModified('name'));
-
   if (!this.isModified('password')) return;
 
   const salt = await bcrypt.genSalt(10);

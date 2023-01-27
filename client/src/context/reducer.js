@@ -106,14 +106,12 @@ const reducer = (state, action) => {
     };
   }
   if (action.type === TOGGLE_SIDEBAR) {
-    console.log('navbar toggled');
     return {
       ...state,
       showSidebar: !state.showSidebar,
     };
   }
   if (action.type === LOGOUT_USER) {
-    console.log('LOGOUT_USER');
     return {
       ...initialState,
       user: null,

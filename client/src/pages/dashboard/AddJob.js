@@ -33,7 +33,6 @@ const AddJob = () => {
       return;
     }
     createJob();
-    console.log('create job');
   };
 
   const handleJobInput = (e) => {

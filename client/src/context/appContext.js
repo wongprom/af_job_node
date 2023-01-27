@@ -208,7 +208,6 @@ const AppProvider = ({ children }) => {
   };
 
   const clearValues = () => {
-    console.log('clear values körs');
     dispatch({
       type: CLEAR_VALUES,
     });
