@@ -7044,4 +7044,29 @@ app.use(mongoSanitize());
 ---
 
 </details>
+
+<details>
+  <summary>Request Limit</summary><br>
+  
+Setup request limit for route `register` and `login`
+
+###### Root/routes/authRouter.js
+
+```js
+import rateLimiter from 'express-rate-limit';
+
+const apiLimiter = rateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+
+router.route('/register').post(apiLimiter, register);
+router.route('/login').post(apiLimiter, login);
+```
+
+---
+
+</details>
+
 ⚠️ fix warning in console this https://stackoverflow.com/questions/70469717/cant-load-a-react-app-after-starting-server ⚠️
