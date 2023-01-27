@@ -263,8 +263,7 @@ const AppProvider = ({ children }) => {
       });
     } catch (error) {
       console.log(error.response);
-      // Toggle logout() for testing
-      // logoutUser();
+      logoutUser();
     }
     clearAlert();
   };
@@ -311,7 +310,7 @@ const AppProvider = ({ children }) => {
         error.response
       );
       // toggle logoutUser for testing
-      // logoutUser()
+      logoutUser();
     }
   };
 
@@ -331,7 +330,7 @@ const AppProvider = ({ children }) => {
         '🚀 ~ file: appContext.js:314 ~ showStats ~ error',
         error.response
       );
-      // logoutUser()
+      logoutUser();
     }
     clearAlert();
   };
