@@ -6844,7 +6844,6 @@ return (
 <details>
   <summary>Render button with page number (state change with new action, works with search functionality)</summary><br>
 
-
 ![image](/images/readme/paginationbtnStateChange.png)
 
 Create action CHANGE_PAGE
@@ -6875,6 +6874,34 @@ return (
     {children}
   </AppContext.Provider>
 );
+```
+
+---
+
+</details>
+
+<details>
+  <summary>Change page/state with next and prev button</summary><br>
+  
+Add functionality to nextPage and prevPage
+###### Root/client/src/components/PageBtnContainer.js
+
+```js
+const nextPage = () => {
+  let newPage = page + 1;
+  if (newPage > numOfPages) {
+    newPage = 1;
+  }
+  changePage(newPage);
+};
+
+const prevPage = () => {
+  let newPage = page - 1;
+  if (newPage < 1) {
+    newPage = numOfPages;
+  }
+  changePage(newPage);
+};
 ```
 
 ---
