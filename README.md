@@ -7332,4 +7332,33 @@ return (
 
 </details>
 
+## Store JWT in cookie
+
+<details>
+  <summary>Setup cookie</summary><br>
+
+###### Root/controllers/authController.js
+
+```js
+const token = user.createJWT();
+user.password = undefined;
+// 👇
+const oneDay = 1000 * 60 * 60 * 24;
+res.cookie('token', token, {
+  httpOnly: true,
+  expires: new Date(Date.now() + oneDay),
+  secure: process.env.NODE_ENV === 'production',
+});
+```
+
+###### Root/
+
+```js
+
+```
+
+---
+
+</details>
+
 ⚠️ fix warning in console this https://stackoverflow.com/questions/70469717/cant-load-a-react-app-after-starting-server ⚠️
