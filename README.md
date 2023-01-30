@@ -7170,4 +7170,166 @@ Create new user, in my case test user. Add new button that onClick trigger exist
 
 </details>
 
+<details>
+  <summary>Make Test User to Read Only</summary><br>
+
+Create middleware testUser.js
+Make Test User Read Only for routes
+
+- createJob
+- deleteJob
+- updateJob
+- updateUser
+
+Create middleware testUser
+
+###### Root/middleware/testUser.js
+
+```js
+import { BadRequestError } from '../errors/index.js';
+
+const testUser = (req, res, next) => {
+  if (req.user.testUser) {
+    throw new BadRequestError('Test User, Read Only');
+  }
+  next();
+};
+
+export default testUser;
+```
+
+Implement middleware testUser in jobsRouter
+
+###### Root/routes/jobsRouter.js
+
+```js
+import testUser from '../middleware/testUser.js';
+
+router.route('/').post(testUser, createJob).get(getAllJobs);
+router.route('/:id').delete(testUser, deleteJob).patch(testUser, updateJob);
+```
+
+Implement middleware testUser in jobsRouter
+
+###### Root/routes/jobsRouter.js
+
+```js
+import testUser from '../middleware/testUser.js';
+
+router.route('/').post(testUser, createJob).get(getAllJobs);
+router.route('/:id').delete(testUser, deleteJob).patch(testUser, updateJob);
+```
+
+Implement middleware testUser in authRouter
+
+###### Root/routes/authRouter.js
+
+```js
+import testUser from '../middleware/testUser.js';
+
+router.route('/updateUser').patch(authenticateUser, testUser, updateUser);
+```
+
+Implement check in auth if testUser
+
+###### Root/middleware/auth.js
+
+```js
+import jwt from 'jsonwebtoken';
+import { UnAuthenticatedError } from '../errors/index.js';
+
+const auth = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer')) {
+    throw new UnAuthenticatedError('Authentication Invalid');
+  }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const testUser = payload.userId === '63d79d65d112dff48470c484'; // <--
+    req.user = { userId: payload.userId, testUser }; // <--
+    next();
+  } catch (error) {
+    throw new UnAuthenticatedError('Authentication Invalid');
+  }
+};
+
+export default auth;
+```
+
+Make some changes for frontend when Test User tries to delete a job
+
+###### Root/client/src/context/actions.js
+
+```js
+export const DELETE_JOB_ERROR = 'DELETE_JOB_ERROR';
+```
+
+###### Root/client/src/context/appContext.js
+
+```js
+import { DELETE_JOB_ERROR } from './actions';
+
+const deleteJob = async (jobId) => {
+  dispatch({ type: DELETE_JOB_BEGIN });
+
+  try {
+    await authFetch.delete(`/jobs/${jobId}`);
+    getJobs();
+  } catch (error) {
+    // update catch block
+    if (error.response.status === 401) return;
+    dispatch({
+      type: DELETE_JOB_ERROR,
+      payload: { msg: error.response.data.msg },
+    });
+  }
+  clearAlert(); // <--
+};
+```
+
+###### Root/client/src/context/reducer.js
+
+```js
+import { DELETE_JOB_ERROR } from './actions';
+
+if (action.type === DELETE_JOB_ERROR) {
+  return {
+    ...state,
+    isLoading: false,
+    showAlert: true,
+    alertType: 'danger',
+    alertText: action.payload.msg,
+  };
+}
+```
+
+###### Root/client/src/components/JobsContainer.js
+
+```js
+import Alert from './Alert';
+
+const { showAlert } = useAppContext();
+
+return (
+  <Wrapper>
+    {showAlert && <Alert />} {/* <-- */}
+    <h5>
+      {totalJobs} job{jobs.length > 1 && 's'} found
+    </h5>
+    <div className="jobs">
+      {jobs.map((job) => {
+        return <Job key={job._id} {...job} />;
+      })}
+    </div>
+    {numOfPages > 1 && <PageBtnContainer />}
+  </Wrapper>
+);
+```
+
+---
+
+</details>
+
 ⚠️ fix warning in console this https://stackoverflow.com/questions/70469717/cant-load-a-react-app-after-starting-server ⚠️
