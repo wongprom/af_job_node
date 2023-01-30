@@ -7069,4 +7069,77 @@ router.route('/login').post(apiLimiter, login);
 
 </details>
 
+## Use debounce for search
+
+<details>
+  <summary>Setup own debounce for search field</summary><br>
+
+###### Root/client/src/components/SearchContainer.js
+
+```js
+import { FormRow, FormRowSelect } from '.';
+import { useAppContext } from '../context/appContext';
+import Wrapper from '../assets/wrappers/SearchContainer';
+import { useState, useMemo } from 'react'; // <--
+
+const SearchContainer = () => {
+  const [localSearch, setLocalSearch] = useState(''); // <--
+  const {
+    isLoading,
+    search,
+    searchStatus,
+    searchType,
+    sort,
+    sortOptions,
+    statusOptions,
+    jobTypeOptions,
+    handleChange,
+    clearFilters,
+  } = useAppContext();
+
+  // debounce function
+  const debounce = () => {
+    let timeoutID;
+    return (e) => {
+      setLocalSearch(e.target.value);
+      clearTimeout(timeoutID);
+      timeoutID = setTimeout(() => {
+        handleChange({ name: e.target.name, value: e.target.value });
+      }, 500);
+    };
+  };
+
+  const optimizedDebounce = useMemo(() => debounce(), []); // <--
+
+  const handleSearch = (e) => {
+    handleChange({ name: e.target.name, value: e.target.value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLocalSearch(''); // <--
+    clearFilters();
+  };
+
+  return (
+    <Wrapper>
+      <h4>search form</h4>
+      <div className="form-center">
+        <FormRow
+          type="text"
+          name="search"
+          value={localSearch} // <--
+          onChange={optimizedDebounce} // <--
+        />
+        {/*Some other inputs..*/}
+      </div>
+    </Wrapper>
+  );
+};
+export default SearchContainer;
+```
+
+---
+
+</details>
+
 ⚠️ fix warning in console this https://stackoverflow.com/questions/70469717/cant-load-a-react-app-after-starting-server ⚠️
