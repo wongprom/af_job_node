@@ -7142,4 +7142,32 @@ export default SearchContainer;
 
 </details>
 
+## Login with Test User account
+
+<details>
+  <summary>Login with Test User account</summary><br>
+
+![image](/images/readme/demoUserLogin.png)
+
+Create new user, in my case test user. Add new button that onClick trigger existing loginUser function with hard coded values.
+
+###### Root/client/src/pages/Register.js
+
+```js
+<button
+  type="button"
+  className="btn btn-block btn-hipster"
+  disabled={isLoading}
+  onClick={() => {
+    loginUser({ email: 'devtest@devtest.com', password: 'devtest' });
+  }}
+>
+  {isLoading ? 'loading...' : 'demo'}
+</button>
+```
+
+---
+
+</details>
+
 ⚠️ fix warning in console this https://stackoverflow.com/questions/70469717/cant-load-a-react-app-after-starting-server ⚠️
