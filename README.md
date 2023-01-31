@@ -7332,7 +7332,7 @@ return (
 
 </details>
 
-## Store JWT in cookie
+## Auth with cookies
 
 <details>
   <summary>Setup cookie</summary><br>
@@ -7416,4 +7416,50 @@ const updateUser = async (req, res) => {
 
 </details>
 
+<details>
+  <summary>Setup cookie-parser and log cookie in auht</summary><br>
+
+[https://www.npmjs.com/package/cookie-parser](https://www.npmjs.com/package/cookie-parser)- Parse Cookie header and populate req.cookies with an object keyed by the cookie names. Optionally you may enable signed cookie support by passing a secret string, which assigns req.secret so it may be used by other middleware.
+
+```
+npm install cookie-parser
+```
+
+###### Root/server.js
+
+```js
+import cookieParser from 'cookie-parser';
+
+app.use(express.json());
+// 👇 👆
+app.use(cookieParser());
+```
+
+###### Root/middleware/auth.js
+
+```js
+import cookieParser from 'cookie-parser';
+
+const auth = async (req, res, next) => {
+  console.log(req.cookies); // <--
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer')) {
+    throw new UnAuthenticatedError('Authentication Invalid');
+  }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const testUser = payload.userId === '63d79d65d112dff48470c484';
+    req.user = { userId: payload.userId, testUser };
+    next();
+  } catch (error) {
+    throw new UnAuthenticatedError('Authentication Invalid');
+  }
+};
+```
+
+---
+
+</details>
 ⚠️ fix warning in console this https://stackoverflow.com/questions/70469717/cant-load-a-react-app-after-starting-server ⚠️
