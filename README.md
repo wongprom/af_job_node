@@ -8049,6 +8049,41 @@ export { AppProvider };
 
 </details>
 
+<details>
+  <summary> getCurrentUser  - server</summary><br>
+
+Create getCurrentUser in authController
+
+###### Root/controllers/authController.js
+
+```js
+const getCurrentUser = async (req, res) => {
+  const user = await User.findOne({ _id: req.user.userId });
+  res.status(StatusCodes.OK).json({
+    user,
+    location: user.location,
+  });
+};
+
+export { register, login, updateUser, getCurrentUser };
+```
+
+Import getCurrentUser from authRouter
+
+###### Root/routes/authRouter.js
+
+```js
+import { getCurrentUser } from '../controllers/authController.js';
+
+router.route('/updateUser').patch(authenticateUser, testUser, updateUser);
+// 👇
+router.route('/getCurrentUser').get(authenticateUser, getCurrentUser);
+```
+
+---
+
+</details>
+
 <br>
 <br>
 <br>

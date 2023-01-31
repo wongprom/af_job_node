@@ -72,4 +72,13 @@ const updateUser = async (req, res) => {
     location: user.location,
   });
 };
-export { register, login, updateUser };
+
+const getCurrentUser = async (req, res) => {
+  const user = await User.findOne({ _id: req.user.userId });
+  res.status(StatusCodes.OK).json({
+    user,
+    location: user.location,
+  });
+};
+
+export { register, login, updateUser, getCurrentUser };
