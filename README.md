@@ -7351,10 +7351,65 @@ res.cookie('token', token, {
 });
 ```
 
-###### Root/
+---
+
+</details>
+
+<details>
+  <summary>Move cookie to own file so we can reuse it.</summary><br>
+
+###### Root/utils/attachCookies.js
 
 ```js
+const attachCookies = ({ res, token }) => {
+  console.log('attachCookies');
+  const oneDay = 1000 * 60 * 60 * 24;
 
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === 'production',
+  });
+};
+
+export default attachCookies;
+```
+
+How to import and invoke cookie
+
+###### Root/controllers/authController.js
+
+```js
+import attachCookies from '../utils/attachCookies.js';
+
+const register = async (req, res) => {
+  // some code...
+
+  const token = user.createJWT();
+
+  attachCookies({ res, token });
+
+  // some code...
+};
+
+const login = async (req, res) => {
+  // some code...
+  const token = user.createJWT();
+
+  attachCookies({ res, token });
+
+  // some code...
+};
+
+const updateUser = async (req, res) => {
+  // some code...
+
+  const token = user.createJWT();
+
+  attachCookies({ res, token });
+
+  // some code...
+};
 ```
 
 ---
