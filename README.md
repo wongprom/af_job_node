@@ -1,3 +1,12 @@
+# Add and search for jobs
+
+![image](/images/readme/Screenshot%202023-02-02%20at%2015.01.02.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2015.01.10.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2015.01.43.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2015.01.56.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2015.02.08.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2015.02.26.png)
+
 ## MongoDB, mongoose, API and Server stuff
 
 <details>
