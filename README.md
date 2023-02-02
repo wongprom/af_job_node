@@ -8294,6 +8294,49 @@ const logoutUser = async () => {
 ---
 
 </details>
+
+## Prep for deployment
+
+<details>
+  <summary>Delete folders and add/run script</summary><br>
+
+Delete folders from client
+
+- build
+- node_modules
+
+Delete folders from server
+
+- node_modules
+
+Add script in package.json - on the server
+
+###### Root/
+
+```js
+"scripts":{
+  "setup-production":"npm run install-client && npm run build-client && npm install",
+  "install-client":"cd client && npm install",
+}
+```
+
+run script
+
+```
+npm run setup-production
+```
+
+run script
+
+```
+node server
+```
+
+Go to [http://localhost:5000/](http://localhost:5000/)
+
+---
+
+</details>
 <br>
 <br>
 <br>
