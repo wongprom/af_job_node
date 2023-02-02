@@ -8084,6 +8084,102 @@ router.route('/getCurrentUser').get(authenticateUser, getCurrentUser);
 
 </details>
 
+<details>
+  <summary>getCurrentUser - frontend</summary><br>
+
+Add action GET_CURRENT_USER_BEGIN
+
+###### Root/client/src/context/actions.js
+
+```js
+export const GET_CURRENT_USER_BEGIN = 'GET_CURRENT_USER_BEGIN';
+export const GET_CURRENT_USER_SUCCESS = 'GET_CURRENT_USER_SUCCESS';
+```
+
+###### Root/client/src/context/appContext.js
+
+```js
+import { GET_CURRENT_USER_BEGIN, GET_CURRENT_USER_SUCCESS } from './actions';
+
+export const initialState = {
+  userLoading: true,
+};
+
+const getCurrentUser = async () => {
+  dispatch({ type: GET_CURRENT_USER_BEGIN });
+  try {
+    const { data } = await authFetch('/auth/getCurrentUser');
+    const { user, location } = data;
+
+    dispatch({ type: GET_CURRENT_USER_SUCCESS, payload: { user, location } });
+  } catch (error) {
+    if (error.response.status === 401) return;
+    logoutUser();
+  }
+};
+useEffect(() => {
+  getCurrentUser();
+}, []);
+```
+
+###### Root/client/src/context/reducer.js
+
+```diff
+import {
++  GET_CURRENT_USER_BEGIN,
++  GET_CURRENT_USER_SUCCESS,
+} from './actions';
+
+  if (action.type === LOGOUT_USER) {
+    return {
+      ...initialState,
+-     user: null,
+-      userLocation: '',
+-      jobLocation: '',
++      userLoading: false
+    };
+  }
+// add  👇
+    if (action.type === GET_CURRENT_USER_BEGIN) {
+    return { ...state, userLoading: true, showAlert: false };
+  }
+
+  if (action.type === GET_CURRENT_USER_SUCCESS) {
+    return {
+      ...state,
+      userLoading: false,
+      user: action.payload.user,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
+    };
+  }
+// add   👆
+
+```
+
+###### Root/client/src/pages/ProtectedRoute.js
+
+```js
+import { Navigate } from 'react-router-dom';
+import { useAppContext } from '../context/appContext';
+import Loading from '../components/Loading'; // <--
+
+const ProtectedRoute = ({ children }) => {
+  const { user, userLoading } = useAppContext();
+  if (userLoading) return <Loading />; // <--
+
+  if (!user) {
+    return <Navigate to="landing" />;
+  }
+  return children;
+};
+export default ProtectedRoute;
+```
+
+---
+
+</details>
+
 <br>
 <br>
 <br>

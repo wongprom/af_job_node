@@ -30,6 +30,8 @@ import {
   SHOW_STATS_SUCCESS,
   CLEAR_FILTERS,
   CHANGE_PAGE,
+  GET_CURRENT_USER_BEGIN,
+  GET_CURRENT_USER_SUCCESS,
 } from './actions';
 
 const reducer = (state, action) => {
@@ -113,9 +115,7 @@ const reducer = (state, action) => {
   if (action.type === LOGOUT_USER) {
     return {
       ...initialState,
-      user: null,
-      userLocation: '',
-      jobLocation: '',
+      userLoading: false,
     };
   }
 
@@ -300,6 +300,20 @@ const reducer = (state, action) => {
     return {
       ...state,
       page: action.payload.page,
+    };
+  }
+
+  if (action.type === GET_CURRENT_USER_BEGIN) {
+    return { ...state, userLoading: true, showAlert: false };
+  }
+
+  if (action.type === GET_CURRENT_USER_SUCCESS) {
+    return {
+      ...state,
+      userLoading: false,
+      user: action.payload.user,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
     };
   }
 
