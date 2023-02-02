@@ -8311,7 +8311,7 @@ Delete folders from server
 
 Add script in package.json - on the server
 
-###### Root/
+###### Root/package.json
 
 ```js
 "scripts":{
@@ -8335,6 +8335,17 @@ node server
 Go to [http://localhost:5000/](http://localhost:5000/)
 
 ---
+
+</details>
+
+## What I use to deploy application
+
+<details>
+  <summary>Details</summary><br>
+
+[https://render.com/](https://render.com/) (free tier) - Render is a unified cloud to build and run all your apps and websites with free TLS certificates, a global CDN, DDoS protection, private networks, and auto deploys from Git.Render is a unified cloud to build and run all your apps and websites with free TLS certificates, a global CDN, DDoS protection, private networks, and auto deploys from Git.
+
+[https://github.com/](https://github.com/) - Let’s build from here. Harnessed for productivity. Designed for collaboration. Celebrated for built-in security. Welcome to the platform developers love.
 
 </details>
 <br>
