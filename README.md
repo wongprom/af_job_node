@@ -8309,6 +8309,8 @@ Delete folders from server
 
 - node_modules
 
+Make sure that you have build folder, node_modules in gitignore files.
+
 Add script in package.json - on the server
 
 ###### Root/package.json
@@ -8346,6 +8348,48 @@ Go to [http://localhost:5000/](http://localhost:5000/)
 [https://render.com/](https://render.com/) (free tier) - Render is a unified cloud to build and run all your apps and websites with free TLS certificates, a global CDN, DDoS protection, private networks, and auto deploys from Git.Render is a unified cloud to build and run all your apps and websites with free TLS certificates, a global CDN, DDoS protection, private networks, and auto deploys from Git.
 
 [https://github.com/](https://github.com/) - Let’s build from here. Harnessed for productivity. Designed for collaboration. Celebrated for built-in security. Welcome to the platform developers love.
+
+</details>
+
+## Steps in Render
+
+<details>
+  <summary>How to deploy steps on Render</summary><br>
+
+![image](/images/readme/Screenshot%202023-02-02%20at%2013.27.43.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2013.28.21.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2013.29.14.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2013.31.30.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2013.34.20.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2013.48.07.png)
+![image](/images/readme/Screenshot%202023-02-02%20at%2013.50.28.png)
+
+###### Root/
+
+```js
+
+```
+
+---
+
+</details>
+
+## How to deploy changes to Render
+
+<details>
+  <summary>Steps to deploy changes</summary><br>
+
+1. Push changes to github
+2. Chose a deploy option
+   ![image](/images/readme/Screenshot%202023-02-02%20at%2014.36.01.png)
+
+###### Root/
+
+```js
+
+```
+
+---
 
 </details>
 <br>
