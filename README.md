@@ -8242,6 +8242,58 @@ export default Landing;
 ---
 
 </details>
+
+## Remove cookie when user logout
+
+<details>
+  <summary>Create route - server</summary><br>
+
+Remove cookie
+
+###### Root/controllers/authController.js
+
+```js
+const logout = async (req, res) => {
+  res.cookie('token', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+  res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
+};
+
+export { logout };
+```
+
+###### Root/routes/authRouter.js
+
+```js
+import {
+  // some imports....
+  logout,
+} from '../controllers/authController.js';
+
+router.route('/logout').get(logout);
+```
+
+---
+
+</details>
+
+<details>
+  <summary>implement logout functionality - frontend </summary><br>
+
+###### Root/client/src/context/appContext.js
+
+```js
+const logoutUser = async () => {
+  await authFetch.get('/auth/logout'); // <--
+  dispatch({ type: LOGOUT_USER });
+};
+```
+
+---
+
+</details>
 <br>
 <br>
 <br>
