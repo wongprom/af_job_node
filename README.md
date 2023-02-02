@@ -8379,8 +8379,10 @@ Go to [http://localhost:5000/](http://localhost:5000/)
 <details>
   <summary>Steps to deploy changes</summary><br>
 
-1. Push changes to github
-2. Chose a deploy option
+1. Push new changes to github
+2. Delete both node_modules and build folders
+3. Run script in terminal: npm run setup-production
+4. Chose a deploy option
    ![image](/images/readme/Screenshot%202023-02-02%20at%2014.36.01.png)
 
 ###### Root/
