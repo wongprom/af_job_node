@@ -20,6 +20,8 @@ import {
   CREATE_JOB_ERROR,
   GET_JOBS_BEGIN,
   GET_JOBS_SUCCESS,
+  GET_JOBS_ARBETSFORMEDLINGEN_BEGIN,
+  GET_JOBS_ARBETSFORMEDLINGEN_SUCCESS,
   SET_EDIT_JOB,
   DELETE_JOB_BEGIN,
   DELETE_JOB_ERROR,
@@ -212,6 +214,22 @@ const reducer = (state, action) => {
       jobs: action.payload.jobs,
       totalJobs: action.payload.totalJobs,
       numOfPages: action.payload.numOfPages,
+    };
+  }
+
+  if (action.type === GET_JOBS_ARBETSFORMEDLINGEN_BEGIN) {
+    return {
+      ...state,
+      isLoading: true,
+      showAlert: false,
+    };
+  }
+
+  if (action.type === GET_JOBS_ARBETSFORMEDLINGEN_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      totalJobsArbetsformedlingen: action.payload.totalJobsArbetsformedlingen,
     };
   }
 

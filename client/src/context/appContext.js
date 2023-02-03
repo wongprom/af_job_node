@@ -22,6 +22,8 @@ import {
   CREATE_JOB_ERROR,
   GET_JOBS_BEGIN,
   GET_JOBS_SUCCESS,
+  GET_JOBS_ARBETSFORMEDLINGEN_BEGIN,
+  GET_JOBS_ARBETSFORMEDLINGEN_SUCCESS,
   SET_EDIT_JOB,
   DELETE_JOB_BEGIN,
   DELETE_JOB_ERROR,
@@ -58,6 +60,10 @@ export const initialState = {
   totalJobs: 0,
   numOfPages: 1,
   page: 1,
+  jobsArbetsformedlingen: [],
+  totalJobsArbetsformedlingen: 0,
+  numOfPagesArbetsformedlingen: 1,
+  pageArbetsformedlingen: 1,
   stats: {},
   monthlyApplications: [],
   search: '',
@@ -210,6 +216,35 @@ const AppProvider = ({ children }) => {
     clearAlert();
   };
 
+  const getJobsArbetsformedlingen = async () => {
+    let url = `https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10`;
+    dispatch({ type: GET_JOBS_ARBETSFORMEDLINGEN_BEGIN });
+    try {
+      const { data } = await axios.get(url);
+      const { positions } = data;
+
+      console.log(
+        '🚀 ~ file: appContext.js:224 ~ getJobsArbetsformedlingen ~ data',
+        data
+      );
+
+      const {
+        jobsArbetsformedlingen,
+        totalJobsArbetsformedlingen,
+        numOfPagesArbetsformedlingen,
+      } = state;
+
+      dispatch({
+        type: GET_JOBS_ARBETSFORMEDLINGEN_SUCCESS,
+        payload: {
+          totalJobsArbetsformedlingen: positions,
+        },
+      });
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
   const getJobs = async () => {
     const { page, search, searchStatus, searchType, sort } = state;
 
@@ -347,6 +382,7 @@ const AppProvider = ({ children }) => {
         showStats,
         clearFilters,
         changePage,
+        getJobsArbetsformedlingen,
       }}
     >
       {children}
