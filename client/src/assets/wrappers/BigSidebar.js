@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const Wrapper = styled.aside`
   display: none;
@@ -17,6 +17,14 @@ const Wrapper = styled.aside`
       position: sticky;
       top: 0;
     }
+    .nav-links-title {
+      display: flex;
+      font-family: var(--bodyFont);
+      color: var(--primary-500);
+      padding-left: 40px;
+      margin-bottom: unset;
+      text-transform: uppercase;
+    }
     .show-sidebar {
       margin-left: 0;
     }
@@ -27,7 +35,7 @@ const Wrapper = styled.aside`
       padding-left: 2.5rem;
     }
     .nav-links {
-      padding-top: 2rem;
+      padding-top: 1rem;
       display: flex;
       flex-direction: column;
     }
@@ -62,5 +70,5 @@ const Wrapper = styled.aside`
       color: var(--primary-500);
     }
   }
-`
-export default Wrapper
+`;
+export default Wrapper;

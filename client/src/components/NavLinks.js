@@ -4,6 +4,7 @@ import links from '../utils/links';
 const NavLinks = ({ toggleSidebar }) => {
   return (
     <div className="nav-links">
+      <h4 className="nav-links-title">Jobify</h4>
       {links.map((link) => {
         const { id, path, icon, text } = link;
         return (
