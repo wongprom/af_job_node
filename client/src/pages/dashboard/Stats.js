@@ -10,10 +10,6 @@ const Stats = () => {
     getJobsArbetsformedlingen,
     totalJobsArbetsformedlingen,
   } = useAppContext();
-  console.log(
-    '🚀 ~ file: Stats.js:13 ~ Stats ~ totalJobsArbetsformedlingen',
-    totalJobsArbetsformedlingen
-  );
   useEffect(() => {
     showStats();
     getJobsArbetsformedlingen();

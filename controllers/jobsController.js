@@ -8,6 +8,7 @@ import {
   UnAuthenticatedError,
 } from '../errors/index.js';
 import checkPermissions from '../utils/checkPermissions.js';
+import axios from 'axios';
 
 const createJob = async (req, res) => {
   const { position, company } = req.body;
@@ -34,6 +35,23 @@ const deleteJob = async (req, res) => {
 
   await job.remove();
   res.status(StatusCodes.OK).json({ msg: 'Success! Job removed' });
+};
+
+const getAllJobsArbetsformedlingen = async (req, res) => {
+  try {
+    const response = await axios.get(
+      'https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10'
+    );
+
+    // structure data that will be sent to frontend
+
+    const { hits, positions } = response.data;
+
+    res.status(StatusCodes.OK).json({ hits, positions });
+  } catch (error) {
+    console.log(error.response.data);
+    return error.response.data;
+  }
 };
 
 const getAllJobs = async (req, res) => {
@@ -163,4 +181,11 @@ const showStats = async (req, res) => {
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 };
 
-export { createJob, deleteJob, getAllJobs, updateJob, showStats };
+export {
+  createJob,
+  deleteJob,
+  getAllJobs,
+  updateJob,
+  showStats,
+  getAllJobsArbetsformedlingen,
+};

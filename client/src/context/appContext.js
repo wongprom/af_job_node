@@ -220,13 +220,8 @@ const AppProvider = ({ children }) => {
     let url = `https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10`;
     dispatch({ type: GET_JOBS_ARBETSFORMEDLINGEN_BEGIN });
     try {
-      const { data } = await axios.get(url);
-      const { positions } = data;
-
-      console.log(
-        '🚀 ~ file: appContext.js:224 ~ getJobsArbetsformedlingen ~ data',
-        data
-      );
+      const { data } = await authFetch.get('/jobs/arbetsformedlingen');
+      const { hits, positions } = data;
 
       const {
         jobsArbetsformedlingen,
@@ -234,12 +229,12 @@ const AppProvider = ({ children }) => {
         numOfPagesArbetsformedlingen,
       } = state;
 
-      dispatch({
-        type: GET_JOBS_ARBETSFORMEDLINGEN_SUCCESS,
-        payload: {
-          totalJobsArbetsformedlingen: positions,
-        },
-      });
+      // dispatch({
+      //   type: GET_JOBS_ARBETSFORMEDLINGEN_SUCCESS,
+      //   payload: {
+      //     totalJobsArbetsformedlingen: positions,
+      //   },
+      // });
     } catch (error) {
       console.log(error.response);
     }
