@@ -48,6 +48,15 @@ const Wrapper = styled.aside`
       text-transform: capitalize;
       transition: var(--transition);
     }
+    .nav-link-af {
+      display: flex;
+      align-items: center;
+      color: #00005b;
+      padding: 1rem 0;
+      padding-left: 2.5rem;
+      text-transform: capitalize;
+      transition: var(--transition);
+    }
     .nav-link:hover {
       background: var(--grey-50);
       padding-left: 3rem;
