@@ -2,34 +2,47 @@ import { NavLink } from 'react-router-dom';
 import links from '../utils/links';
 import { useLocation } from 'react-router-dom';
 import { ImArrowRight } from 'react-icons/im';
+import { SiWorkplace } from 'react-icons/si';
 
-// const linksArbetsformedlingen = [
-//   {
-//     id: 5,
-//     text: 'To Jobify',
-//     path: '/',
-//     icon: <TiArrowRightThick />,
-//   },
-// ];
+const linksArbetsformedlingen = [
+  {
+    id: 5,
+    text: 'AF',
+    path: '/arbetsformedlingen',
+    icon: <SiWorkplace />,
+    end: true,
+  },
+  {
+    id: 6,
+    text: 'All Jobs AF',
+    path: '/arbetsformedlingen/all-jobs-af',
+    icon: <SiWorkplace />,
+    end: false,
+  },
+];
 
 const NavLinks = ({ toggleSidebar }) => {
   // make a custom usePathName hook
-  const { pathname } = useLocation();
-  const isPathNameArbetsformedlingen = pathname === '/arbetsformedlingen';
+  const location = useLocation();
+  const isPathNameIncludesArbetsformedlingen =
+    location.pathname.includes('arbetsformedlingen');
 
-  // const renderLinks = isPathNameArbetsformedlingen
-  //   ? linksArbetsformedlingen
-  //   : links;
+  const renderLinks = isPathNameIncludesArbetsformedlingen
+    ? linksArbetsformedlingen
+    : links;
 
   return (
     <div className="nav-links">
-      <h4 className="nav-links-title">Jobify</h4>
-      {links.map((link) => {
-        const { id, path, icon, text } = link;
+      <h4 className="nav-links-title">
+        {isPathNameIncludesArbetsformedlingen ? 'AF' : 'Jobify'}
+      </h4>
+      {renderLinks.map((link) => {
+        const { id, path, icon, text, end = false } = link;
         return (
           <NavLink
             key={id}
             to={path}
+            end={end}
             className={({ isActive }) =>
               isActive ? 'nav-link active' : 'nav-link '
             }
@@ -44,10 +57,10 @@ const NavLinks = ({ toggleSidebar }) => {
         className={({ isActive }) =>
           isActive ? 'nav-link nav-link-af active' : 'nav-link nav-link-af'
         }
-        to={isPathNameArbetsformedlingen ? '/' : '/arbetsformedlingen'}
+        to={isPathNameIncludesArbetsformedlingen ? '/' : '/arbetsformedlingen'}
       >
-        <span className="icon ">{<ImArrowRight color="#B7EE4A" />}</span>
-        {isPathNameArbetsformedlingen ? 'To Jobify' : 'To AF'}
+        <span className="icon">{<ImArrowRight color="#B7EE4A" />}</span>
+        {isPathNameIncludesArbetsformedlingen ? 'To Jobify' : 'To AF'}
       </NavLink>
     </div>
   );

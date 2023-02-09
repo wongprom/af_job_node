@@ -8403,6 +8403,21 @@ Go to [http://localhost:5000/](http://localhost:5000/)
 ---
 
 </details>
+
+## Arbetsformedlingen, S\*#it to do
+
+[ ] - Add jobs to context<p>
+[ ] - Display jobs <p>
+[ ] - more <p>
+[ ] - more <p>
+[ ] - more <p>
+[ ] - more <p>
+[ ] - more <p>
+
+---
+
+</details>
+
 <br>
 <br>
 <br>

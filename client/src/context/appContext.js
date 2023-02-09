@@ -220,8 +220,12 @@ const AppProvider = ({ children }) => {
     let url = `https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10`;
     dispatch({ type: GET_JOBS_ARBETSFORMEDLINGEN_BEGIN });
     try {
-      const { data } = await authFetch.get('/jobs/arbetsformedlingen');
+      const { data } = await authFetch.get('/arbetsformedlingen/all-jobs-af');
       const { hits, positions } = data;
+      console.log(
+        '🚀 ~ file: appContext.js:225 ~ getJobsArbetsformedlingen ~ hits',
+        hits
+      );
 
       const {
         jobsArbetsformedlingen,

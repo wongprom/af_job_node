@@ -7,7 +7,10 @@ import {
   Stats,
   SharedLayout,
 } from './pages/dashboard/index';
-import { SharedLayoutArbetsformedlingen } from './pages/dashboard/arbetsformedlingen/index';
+import {
+  SharedLayoutArbetsformedlingen,
+  AllJobsArbetsformedlingen,
+} from './pages/dashboard/arbetsformedlingen/index';
 
 function App() {
   return (
@@ -21,10 +24,11 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<div>Arbetsförmedlingen</div>} />
-          {/* <Route path="all-jobs" element={<AllJobs />}></Route>
-          <Route path="add-job" element={<AddJob />}></Route>
-          <Route path="profile" element={<Profile />}></Route> */}
+          <Route index element={<div> Welcome to Arbetsförmedlingen</div>} />
+          <Route
+            path="all-jobs-af"
+            element={<AllJobsArbetsformedlingen />}
+          ></Route>
         </Route>
         <Route
           path="/"

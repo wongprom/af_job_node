@@ -17,6 +17,7 @@ import connectDB from './db/connect.js';
 // routers
 import authRouter from './routes/authRouter.js';
 import jobsRouter from './routes/jobsRouter.js';
+import jobsRouterArbetsformedlingen from './routes/jobsRouterArbetsformedlingen.js';
 
 // Middleware
 import notFoundMiddleware from './middleware/not-found.js';
@@ -49,6 +50,11 @@ app.get('/api/v1', (req, res) => {
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/jobs', authenticateUser, jobsRouter);
+app.use(
+  '/api/v1/arbetsformedlingen',
+  authenticateUser,
+  jobsRouterArbetsformedlingen
+);
 
 //! only when ready to deploy, use code below
 // app.get('*', function (request, response) {
