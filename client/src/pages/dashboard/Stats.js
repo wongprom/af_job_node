@@ -12,14 +12,12 @@ const Stats = () => {
   } = useAppContext();
   useEffect(() => {
     showStats();
-    getJobsArbetsformedlingen();
   }, []);
 
   if (isLoading) {
     <Loading center />;
   }
-  // https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10
-  // https://jobsearch.api.jobtechdev.se/
+
   return (
     <>
       <StatsContainer />

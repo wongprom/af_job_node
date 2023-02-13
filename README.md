@@ -8408,8 +8408,8 @@ Go to [http://localhost:5000/](http://localhost:5000/)
 
 [ ] - Add jobs to context<p>
 [ ] - Display jobs <p>
-[ ] - more <p>
-[ ] - more <p>
+[ ] - Structure data in controller that will be sent to frontend <p>
+[ ] - Pass params to search Arbetsförmedlingen jobs <p>
 [ ] - more <p>
 [ ] - more <p>
 [ ] - more <p>

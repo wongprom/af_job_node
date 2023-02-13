@@ -217,32 +217,26 @@ const AppProvider = ({ children }) => {
   };
 
   const getJobsArbetsformedlingen = async () => {
-    let url = `https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10`;
     dispatch({ type: GET_JOBS_ARBETSFORMEDLINGEN_BEGIN });
     try {
       const { data } = await authFetch.get('/arbetsformedlingen/all-jobs-af');
-      const { hits, positions } = data;
-      console.log(
-        '🚀 ~ file: appContext.js:225 ~ getJobsArbetsformedlingen ~ hits',
-        hits
-      );
+      const { jobs, totalJobs, numOfPages } = data;
 
-      const {
-        jobsArbetsformedlingen,
-        totalJobsArbetsformedlingen,
-        numOfPagesArbetsformedlingen,
-      } = state;
-
-      // dispatch({
-      //   type: GET_JOBS_ARBETSFORMEDLINGEN_SUCCESS,
-      //   payload: {
-      //     totalJobsArbetsformedlingen: positions,
-      //   },
-      // });
+      dispatch({
+        type: GET_JOBS_ARBETSFORMEDLINGEN_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages,
+        },
+      });
     } catch (error) {
       console.log(error.response);
     }
   };
+  // useEffect(() => {
+  //   getJobsArbetsformedlingen();
+  // }, []);
 
   const getJobs = async () => {
     const { page, search, searchStatus, searchType, sort } = state;

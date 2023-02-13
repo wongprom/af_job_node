@@ -229,7 +229,9 @@ const reducer = (state, action) => {
     return {
       ...state,
       isLoading: false,
-      totalJobsArbetsformedlingen: action.payload.totalJobsArbetsformedlingen,
+      jobsArbetsformedlingen: action.payload.jobs,
+      totalJobsArbetsformedlingen: action.payload.totalJobs,
+      numOfPagesArbetsformedlingen: action.payload.numOfPages,
     };
   }
 

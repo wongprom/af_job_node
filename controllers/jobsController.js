@@ -38,16 +38,31 @@ const deleteJob = async (req, res) => {
 };
 
 const getAllJobsArbetsformedlingen = async (req, res) => {
+  // https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10
+  // https://jobsearch.api.jobtechdev.se/
   try {
     const response = await axios.get(
       'https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10'
     );
 
-    // structure data that will be sent to frontend
-
     const { hits, positions } = response.data;
 
-    res.status(StatusCodes.OK).json({ hits, positions });
+    const structureJobs = hits.map((job) => {
+      let temp = {};
+      temp.company = job.employer.workplace;
+      temp.position = job.headline;
+      temp.createdAt = job.publication_date;
+      temp.jobLocation = job.workplace_address.municipality;
+      temp.jobType = job.employment_type.label;
+      temp.status = 'pending';
+      temp._id = job.id;
+      return temp;
+    });
+
+    const jobs = await structureJobs;
+    const numOfPages = 6;
+    const totalJobs = positions;
+    res.status(StatusCodes.OK).json({ jobs, totalJobs, numOfPages });
   } catch (error) {
     console.log(error.response.data);
     return error.response.data;

@@ -5,7 +5,6 @@ import {
   getAllJobs,
   updateJob,
   showStats,
-  getAllJobsArbetsformedlingen,
 } from '../controllers/jobsController.js';
 import testUser from '../middleware/testUser.js';
 
