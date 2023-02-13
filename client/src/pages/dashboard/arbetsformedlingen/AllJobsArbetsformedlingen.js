@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { JobsContainer, Loading, SearchContainer } from '../../../components';
+import { Loading, SearchContainer } from '../../../components';
+import { JobsContainer } from '../../../components/arbetsformedlingen';
 import { useAppContext } from '../../../context/appContext';
 
 const AllJobsArbetsformedlingen = () => {
@@ -17,12 +18,9 @@ const AllJobsArbetsformedlingen = () => {
   return (
     <>
       <h1>AllJobsArbetsformedlingen Page</h1>
-      {jobsArbetsformedlingen?.map((job) => (
-        <p key={job._id}>{job.company}</p>
-      ))}
 
-      {/* <SearchContainer />
-      <JobsContainer /> */}
+      {/* <SearchContainer />*/}
+      <JobsContainer />
     </>
   );
 };

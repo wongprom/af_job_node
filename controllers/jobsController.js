@@ -60,8 +60,8 @@ const getAllJobsArbetsformedlingen = async (req, res) => {
     });
 
     const jobs = await structureJobs;
-    const numOfPages = 6;
     const totalJobs = positions;
+    const numOfPages = Math.ceil(totalJobs / 10);
     res.status(StatusCodes.OK).json({ jobs, totalJobs, numOfPages });
   } catch (error) {
     console.log(error.response.data);
