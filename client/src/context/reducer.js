@@ -317,6 +317,12 @@ const reducer = (state, action) => {
     };
   }
   if (action.type === CHANGE_PAGE) {
+    if (action.payload.isAf) {
+      return {
+        ...state,
+        pageArbetsformedlingen: action.payload.page,
+      };
+    }
     return {
       ...state,
       page: action.payload.page,

@@ -4,7 +4,7 @@ import Loading from '../Loading';
 import { Job } from './index';
 import Alert from '../Alert';
 import Wrapper from '../../assets/wrappers/JobsContainer';
-import PageBtnContainer from '../PageBtnContainer';
+import { PageBtnContainer } from '../arbetsformedlingen/index';
 
 const JobsContainer = () => {
   const {

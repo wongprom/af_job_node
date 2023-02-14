@@ -335,8 +335,8 @@ const AppProvider = ({ children }) => {
     dispatch({ type: CLEAR_FILTERS });
   };
 
-  const changePage = (page) => {
-    dispatch({ type: CHANGE_PAGE, payload: { page } });
+  const changePage = (page, isAf) => {
+    dispatch({ type: CHANGE_PAGE, payload: { page, isAf } });
   };
 
   const getCurrentUser = async () => {
