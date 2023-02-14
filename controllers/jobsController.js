@@ -40,12 +40,23 @@ const deleteJob = async (req, res) => {
 const getAllJobsArbetsformedlingen = async (req, res) => {
   // https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10
   // https://jobsearch.api.jobtechdev.se/
+
   try {
+    // const { status, jobType, sort, search } = req.query;
+    const page = Number(req.query.page) || 2;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit; //10
+
     const response = await axios.get(
-      'https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10'
+      `https://jobsearch.api.jobtechdev.se/search?q=react&offset=${skip}&limit=${limit}`
     );
 
-    const { hits, positions } = response.data;
+    // console.log('response.data', response.data);
+    const {
+      hits,
+      positions,
+      total: { value },
+    } = response.data;
 
     const structureJobs = hits.map((job) => {
       let temp = {};
@@ -58,10 +69,15 @@ const getAllJobsArbetsformedlingen = async (req, res) => {
       temp._id = job.id;
       return temp;
     });
+    // console.log(
+    //   '🚀 ~ file: jobsController.js:68 ~ structureJobs ~ structureJobs',
+    //   structureJobs
+    // );
 
     const jobs = await structureJobs;
-    const totalJobs = positions;
-    const numOfPages = Math.ceil(totalJobs / 10);
+    const totalJobs = value;
+    const numOfPages = Math.ceil(totalJobs / limit);
+
     res.status(StatusCodes.OK).json({ jobs, totalJobs, numOfPages });
   } catch (error) {
     console.log(error.response.data);
