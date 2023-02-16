@@ -38,14 +38,14 @@ const deleteJob = async (req, res) => {
 };
 
 const getAllJobsArbetsformedlingen = async (req, res) => {
-  const { searchArbetsformedlingen } = req.body;
+  const { searchArbetsformedlingen, pageArbetsformedlingen } = req.body;
 
   // https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10
   // info 'https://jobsearch.api.jobtechdev.se/search?q=react%20fullstack%20dev&offset=0&limit=10'
   // https://jobsearch.api.jobtechdev.se/
 
   try {
-    const page = Number(req.query.page) || 2;
+    const page = Number(pageArbetsformedlingen) || 1;
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit; //10
     const searchWords = !searchArbetsformedlingen && 'react';

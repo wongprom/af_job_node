@@ -220,9 +220,10 @@ const AppProvider = ({ children }) => {
   const getJobsArbetsformedlingen = async () => {
     dispatch({ type: GET_JOBS_ARBETSFORMEDLINGEN_BEGIN });
     try {
-      const { searchArbetsformedlingen } = state;
+      const { searchArbetsformedlingen, pageArbetsformedlingen } = state;
       const { data } = await authFetch.post('/arbetsformedlingen/all-jobs-af', {
         searchArbetsformedlingen,
+        pageArbetsformedlingen,
       });
       const { jobs, totalJobs, numOfPages } = data;
 
