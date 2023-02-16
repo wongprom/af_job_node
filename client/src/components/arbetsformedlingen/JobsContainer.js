@@ -21,10 +21,6 @@ const JobsContainer = () => {
     showAlert,
   } = useAppContext();
 
-  // useEffect(() => {
-  //   getJobsArbetsformedlingen();
-  // }, []);
-  console.count('JobsContainer i AF');
   if (isLoading) {
     return <Loading center />;
   }

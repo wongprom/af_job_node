@@ -18,10 +18,6 @@ const SearchContainer = () => {
     handleChange,
     clearFilters,
   } = useAppContext();
-  console.log(
-    '🚀 ~ file: SearchContainer.js:21 ~ SearchContainer ~ searchArbetsformedlingen',
-    searchArbetsformedlingen
-  );
 
   const debounce = () => {
     let timeoutID;
