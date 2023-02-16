@@ -15,7 +15,6 @@ const Job = ({
   company,
   createdAt,
 }) => {
-  console.count('Job från arbetsformedlingen');
   const { setEditJob, deleteJob } = useAppContext();
   let date = moment(createdAt);
   date = date.format('DD/MM/YYYY');
