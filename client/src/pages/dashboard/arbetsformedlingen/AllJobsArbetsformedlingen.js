@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
-import { Loading, SearchContainer } from '../../../components';
-import { JobsContainer } from '../../../components/arbetsformedlingen';
+import { Loading } from '../../../components';
+import {
+  JobsContainer,
+  SearchContainer,
+} from '../../../components/arbetsformedlingen';
 import { useAppContext } from '../../../context/appContext';
 
 const AllJobsArbetsformedlingen = () => {
@@ -23,7 +26,7 @@ const AllJobsArbetsformedlingen = () => {
     <>
       <h1>Jobs from Af</h1>
 
-      {/* <SearchContainer />*/}
+      <SearchContainer />
       <JobsContainer />
     </>
   );
