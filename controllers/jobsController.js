@@ -38,14 +38,17 @@ const deleteJob = async (req, res) => {
 };
 
 const getAllJobsArbetsformedlingen = async (req, res) => {
+  const { searchArbetsformedlingen } = req.body;
+
   // https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10
+  // info 'https://jobsearch.api.jobtechdev.se/search?q=react%20fullstack%20dev&offset=0&limit=10'
   // https://jobsearch.api.jobtechdev.se/
 
   try {
-    // const { status, jobType, sort, search } = req.query;
     const page = Number(req.query.page) || 2;
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit; //10
+    const searchWords = !searchArbetsformedlingen && 'react';
 
     /**
      * * New URL "https://jobsearch.api.jobtechdev.se/search?published-after=20160&q=react&resdet=full&offset=0&limit=10&sort=pubdate-desc"
@@ -56,14 +59,10 @@ const getAllJobsArbetsformedlingen = async (req, res) => {
      *
      * */
 
-    const response = await axios.get(
-      `https://jobsearch.api.jobtechdev.se/search?published-after=20160&q=react&resdet=full&offset=${skip}&limit=${limit}&sort=pubdate-desc`
-    );
-    // const response = await axios.get(
-    //   `https://jobsearch.api.jobtechdev.se/search?q=react&offset=${skip}&limit=${limit}`
-    // );
+    const url = `https://jobsearch.api.jobtechdev.se/search?published-after=20160&q=${searchWords}&resdet=full&offset=${skip}&limit=${limit}&sort=pubdate-desc`;
 
-    // console.log('response.data', response.data);
+    const response = await axios.get(url);
+
     const {
       hits,
       positions,
@@ -81,10 +80,6 @@ const getAllJobsArbetsformedlingen = async (req, res) => {
       temp._id = job.id;
       return temp;
     });
-    // console.log(
-    //   '🚀 ~ file: jobsController.js:68 ~ structureJobs ~ structureJobs',
-    //   structureJobs
-    // );
 
     const jobs = await structureJobs;
     const totalJobs = value;

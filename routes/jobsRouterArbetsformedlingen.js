@@ -12,7 +12,7 @@ import testUser from '../middleware/testUser.js';
 const router = express.Router();
 
 // router.route('/').post(testUser, createJob).get(getAllJobs);
-router.route('/all-jobs-af').get(getAllJobsArbetsformedlingen);
+router.route('/all-jobs-af').post(getAllJobsArbetsformedlingen);
 // place before :id
 // router.route('/stats').get(showStats);
 // router.route('/:id').delete(testUser, deleteJob).patch(testUser, updateJob);

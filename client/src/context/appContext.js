@@ -67,6 +67,7 @@ export const initialState = {
   stats: {},
   monthlyApplications: [],
   search: '',
+  searchArbetsformedlingen: '',
   searchStatus: 'all',
   searchType: 'all',
   sort: 'latest',
@@ -219,7 +220,10 @@ const AppProvider = ({ children }) => {
   const getJobsArbetsformedlingen = async () => {
     dispatch({ type: GET_JOBS_ARBETSFORMEDLINGEN_BEGIN });
     try {
-      const { data } = await authFetch.get('/arbetsformedlingen/all-jobs-af');
+      const { searchArbetsformedlingen } = state;
+      const { data } = await authFetch.post('/arbetsformedlingen/all-jobs-af', {
+        searchArbetsformedlingen,
+      });
       const { jobs, totalJobs, numOfPages } = data;
 
       dispatch({
