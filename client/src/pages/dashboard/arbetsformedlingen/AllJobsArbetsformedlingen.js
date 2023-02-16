@@ -21,7 +21,7 @@ const AllJobsArbetsformedlingen = () => {
 
   return (
     <>
-      <h1>AllJobsArbetsformedlingen Page</h1>
+      <h1>Jobs from Af</h1>
 
       {/* <SearchContainer />*/}
       <JobsContainer />
