@@ -39,27 +39,45 @@ const deleteJob = async (req, res) => {
 
 const getAllJobsArbetsformedlingen = async (req, res) => {
   const { searchArbetsformedlingen, pageArbetsformedlingen } = req.body;
-
   // https://jobsearch.api.jobtechdev.se/search?q=react&offset=0&limit=10
   // info 'https://jobsearch.api.jobtechdev.se/search?q=react%20fullstack%20dev&offset=0&limit=10'
   // https://jobsearch.api.jobtechdev.se/
 
+  const page = Number(pageArbetsformedlingen) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit; //10
+
+  let searchFraise = searchArbetsformedlingen;
+
+  const structureSearchFraise = (searchStr) => {
+    let tempSearchStr = searchStr;
+    tempSearchStr = tempSearchStr.toLowerCase();
+
+    const isReactIncluded = tempSearchStr.includes('react');
+    if (!isReactIncluded) {
+      tempSearchStr = tempSearchStr += ' react';
+    }
+    tempSearchStr = tempSearchStr.replace(/ /g, '%20');
+    if (tempSearchStr.startsWith('%20')) {
+      tempSearchStr = tempSearchStr.substring(3);
+    }
+
+    return tempSearchStr;
+  };
+
+  /**
+   * * New URL "https://jobsearch.api.jobtechdev.se/search?published-after=20160&q=react&resdet=full&offset=0&limit=10&sort=pubdate-desc"
+   * info will have hardCode "react" as q value, if no other search words is passed
+   *  @param q search word(s)
+   *  @param offset  jobs to skip
+   *  @param limit  How many jobs to get in response
+   *
+   * */
+
   try {
-    const page = Number(pageArbetsformedlingen) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const skip = (page - 1) * limit; //10
-    const searchWords = !searchArbetsformedlingen && 'react';
-
-    /**
-     * * New URL "https://jobsearch.api.jobtechdev.se/search?published-after=20160&q=react&resdet=full&offset=0&limit=10&sort=pubdate-desc"
-     * info will have hardCode "react" as q value, if no other search words is passed
-     *  @param q search word(s)
-     *  @param offset  jobs to skip
-     *  @param limit  How many jobs to get in response
-     *
-     * */
-
-    const url = `https://jobsearch.api.jobtechdev.se/search?published-after=20160&q=${searchWords}&resdet=full&offset=${skip}&limit=${limit}&sort=pubdate-desc`;
+    const url = `https://jobsearch.api.jobtechdev.se/search?published-after=20160&q=${structureSearchFraise(
+      searchFraise
+    )}&resdet=full&offset=${skip}&limit=${limit}&sort=pubdate-desc`;
 
     const response = await axios.get(url);
 
