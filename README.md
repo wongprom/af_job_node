@@ -8404,15 +8404,13 @@ Go to [http://localhost:5000/](http://localhost:5000/)
 
 </details>
 
-## Arbetsformedlingen, S\*#it to do
+## Arbetsformedlingen, to do
 
-[ ] - Add jobs to context<p>
-[ ] - Display jobs <p>
-[ ] - Structure data in controller that will be sent to frontend <p>
-[ ] - Pass params to search Arbetsförmedlingen jobs <p>
-[ ] - more <p>
-[ ] - more <p>
-[ ] - more <p>
+[X] - Add jobs to context<p>
+[X] - Display jobs <p>
+[X] - Structure data in controller that will be sent to frontend <p>
+[X] - Pass params to search Arbetsförmedlingen jobs <p>
+
 
 ---
 
