@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { FormRow, FormRowSelect } from '../index.js';
 import { useAppContext } from '../../context/appContext';
 import Wrapper from '../../assets/wrappers/SearchContainer';
+import Header from '../../assets/wrappers/Header';
 
 const SearchContainer = () => {
   const [localSearch, setLocalSearch] = useState('');
@@ -22,10 +23,14 @@ const SearchContainer = () => {
 
   return (
     <Wrapper>
-      <h4>search form Af</h4>
+      <Header>
+        <p className="title">Platsbanken</p>
+        <p className="sub-title">Available React jobs for the entire Sweden</p>
+      </Header>
       <div className="form-center">
         <FormRow
           type="text"
+          labelText="Search for one or more words"
           name="searchArbetsformedlingen"
           value={localSearch}
           onChange={optimizedDebounce}
