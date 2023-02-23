@@ -162,6 +162,23 @@ ul {
   background: var(--primary-700);
   box-shadow: var(--shadow-3);
 }
+.btn-af {
+  cursor: pointer;
+  color: #00005a;
+  background: #92eb42;
+  border: transparent;
+  border-radius: var(--borderRadius);
+  letter-spacing: var(--letterSpacing);
+  padding: 0.375rem 0.75rem;
+  box-shadow: var(--shadow-2);
+  transition: var(--transition);
+  text-transform: capitalize;
+  display: inline-block;
+}
+.btn-af:hover {
+  background: #9ced54;
+  box-shadow: var(--shadow-4);
+}
 .btn-hipster {
   color: var(--primary-500);
   background: var(--primary-200);

@@ -11,6 +11,7 @@ import {
   SharedLayoutArbetsformedlingen,
   AllJobsArbetsformedlingen,
 } from './pages/dashboard/arbetsformedlingen/index';
+import LandingArbetsformedlingen from './pages/dashboard/arbetsformedlingen/LandingArbetsformedlingen';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<div> Welcome to Arbetsförmedlingen</div>} />
+          <Route index element={<LandingArbetsformedlingen />} />
           <Route
             path="all-jobs-af"
             element={<AllJobsArbetsformedlingen />}
