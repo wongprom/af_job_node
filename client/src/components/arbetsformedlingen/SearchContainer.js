@@ -5,19 +5,7 @@ import Wrapper from '../../assets/wrappers/SearchContainer';
 
 const SearchContainer = () => {
   const [localSearch, setLocalSearch] = useState('');
-  const {
-    isLoading,
-    search,
-    searchArbetsformedlingen,
-    searchStatus,
-    searchType,
-    sort,
-    sortOptions,
-    statusOptions,
-    jobTypeOptions,
-    handleChange,
-    clearFilters,
-  } = useAppContext();
+  const { handleChange } = useAppContext();
 
   const debounce = () => {
     let timeoutID;
@@ -32,15 +20,6 @@ const SearchContainer = () => {
 
   const optimizedDebounce = useMemo(() => debounce(), []);
 
-  const handleSearch = (e) => {
-    handleChange({ name: e.target.name, value: e.target.value });
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLocalSearch('');
-    clearFilters();
-  };
-
   return (
     <Wrapper>
       <h4>search form Af</h4>
@@ -51,35 +30,6 @@ const SearchContainer = () => {
           value={localSearch}
           onChange={optimizedDebounce}
         />
-        {/* <FormRowSelect
-          labelText="job status"
-          name="searchStatus"
-          value={searchStatus}
-          handleChange={handleSearch}
-          list={['all', ...statusOptions]}
-        />
-
-        <FormRowSelect
-          labelText="job type"
-          name="searchType"
-          value={searchType}
-          handleChange={handleSearch}
-          list={['all', ...jobTypeOptions]}
-        />
-
-        <FormRowSelect
-          name="sort"
-          value={sort}
-          handleChange={handleSearch}
-          list={sortOptions}
-        /> */}
-        <button
-          className="btn btn-block btn-danger"
-          disabled={isLoading}
-          onClick={handleSubmit}
-        >
-          clear filters
-        </button>
       </div>
     </Wrapper>
   );

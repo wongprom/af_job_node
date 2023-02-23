@@ -52,7 +52,9 @@ const PageBtnContainer = () => {
                   ? 'pageBtn active'
                   : 'pageBtn'
               }
-              onClick={() => changePage(pageNumber)}
+              onClick={() =>
+                changePage(pageNumber, isPathNameIncludesArbetsformedlingen)
+              }
             >
               {pageNumber}
             </button>

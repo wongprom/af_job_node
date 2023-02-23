@@ -17,9 +17,14 @@ const JobsContainer = () => {
     // searchStatus,
     // searchType,
     // sort,
+    searchArbetsformedlingen,
     numOfPagesArbetsformedlingen,
     showAlert,
   } = useAppContext();
+
+  useEffect(() => {
+    getJobsArbetsformedlingen();
+  }, [searchArbetsformedlingen, pageArbetsformedlingen]);
 
   if (isLoading) {
     return <Loading center />;
